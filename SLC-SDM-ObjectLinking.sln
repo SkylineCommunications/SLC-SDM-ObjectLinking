@@ -1,0 +1,74 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35825.156
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectLinking.Common", "API.Common\ObjectLinking.Common.csproj", "{90CE07E8-FD52-4054-A52C-18408FAC51FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectLinking.CommonTests", "API.CommonTests\ObjectLinking.CommonTests.csproj", "{BB8E8D02-C8D0-46D2-9E50-00CDF0D743E0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectLinking.Automation", "API.Automation\ObjectLinking.Automation.csproj", "{6576277C-AE12-40AD-AFA7-556CD85E3EA3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectLinking.Protocol", "API.Protocol\ObjectLinking.Protocol.csproj", "{F69FFDBD-3A4B-4F13-A611-7A836BD9B95C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectLinking.GQI", "API.GQI\ObjectLinking.GQI.csproj", "{8B9DF806-B685-4718-BC09-E68602F819E9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectLinking.Install", "Install\ObjectLinking.Install.csproj", "{1D34918E-781E-42F1-9D86-A9501645ECA8}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ObjectLinking.Shared", "Shared\ObjectLinking.Shared.shproj", "{C3D5B2D3-3A0E-4267-8EF0-28775494CDCA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Internal", "Internal", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Code Analysis", "Code Analysis", "{095237AB-DDB9-4DFD-AE8E-C2E997C6F584}"
+	ProjectSection(SolutionItems) = preProject
+		Internal\Code Analysis\qaction-debug.ruleset = Internal\Code Analysis\qaction-debug.ruleset
+		Internal\Code Analysis\qaction-release.ruleset = Internal\Code Analysis\qaction-release.ruleset
+		Internal\Code Analysis\stylecop.json = Internal\Code Analysis\stylecop.json
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{90CE07E8-FD52-4054-A52C-18408FAC51FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90CE07E8-FD52-4054-A52C-18408FAC51FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90CE07E8-FD52-4054-A52C-18408FAC51FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90CE07E8-FD52-4054-A52C-18408FAC51FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB8E8D02-C8D0-46D2-9E50-00CDF0D743E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB8E8D02-C8D0-46D2-9E50-00CDF0D743E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB8E8D02-C8D0-46D2-9E50-00CDF0D743E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB8E8D02-C8D0-46D2-9E50-00CDF0D743E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6576277C-AE12-40AD-AFA7-556CD85E3EA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6576277C-AE12-40AD-AFA7-556CD85E3EA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6576277C-AE12-40AD-AFA7-556CD85E3EA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6576277C-AE12-40AD-AFA7-556CD85E3EA3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F69FFDBD-3A4B-4F13-A611-7A836BD9B95C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F69FFDBD-3A4B-4F13-A611-7A836BD9B95C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F69FFDBD-3A4B-4F13-A611-7A836BD9B95C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F69FFDBD-3A4B-4F13-A611-7A836BD9B95C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B9DF806-B685-4718-BC09-E68602F819E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B9DF806-B685-4718-BC09-E68602F819E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B9DF806-B685-4718-BC09-E68602F819E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B9DF806-B685-4718-BC09-E68602F819E9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D34918E-781E-42F1-9D86-A9501645ECA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D34918E-781E-42F1-9D86-A9501645ECA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D34918E-781E-42F1-9D86-A9501645ECA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D34918E-781E-42F1-9D86-A9501645ECA8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{095237AB-DDB9-4DFD-AE8E-C2E997C6F584} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B1F7F865-1A7C-407B-A2C7-70A7CE6A7E91}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Shared\ObjectLinking.Shared.projitems*{1d34918e-781e-42f1-9d86-a9501645eca8}*SharedItemsImports = 5
+		Shared\ObjectLinking.Shared.projitems*{90ce07e8-fd52-4054-a52c-18408fac51fb}*SharedItemsImports = 5
+		Shared\ObjectLinking.Shared.projitems*{c3d5b2d3-3a0e-4267-8ef0-28775494cdca}*SharedItemsImports = 13
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,21 @@
+﻿<Project Sdk="MSTest.Sdk/3.9.3">
+	<PropertyGroup>
+		<TargetFramework>net48</TargetFramework>
+		<RootNamespace>Skyline.DataMiner.SDM.ObjectLinking.Tests</RootNamespace>
+		<LangVersion>latest</LangVersion>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<UseVSTest>true</UseVSTest>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="FluentAssertions" Version="7.2.0" />
+		<PackageReference Include="Moq" Version="4.18.4" />
+		<PackageReference Include="Skyline.DataMiner.Utils.DOM" Version="10.5.2.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\API.Common\ObjectLinking.Common.csproj" />
+		<ProjectReference Include="..\Install\ObjectLinking.Install.csproj" />
+	</ItemGroup>
+</Project>
