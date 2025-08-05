@@ -1,12 +1,8 @@
-# Skyline.DataMiner.SDM.Ticketing
+# Skyline.DataMiner.SDM.ObjectLinking
 
 ## About
 
-Contains classes to easily interact with Ticketing SDM
-
-## Projects
-
-* For more information about Skyline.DataMiner.SDM.Ticketing, see [SDM.Ticketing/README.md](SDM.Ticketing/README.md).
+Contains the models and helper classes to interact with the standard object linking model.
 
 ### About DataMiner
 
