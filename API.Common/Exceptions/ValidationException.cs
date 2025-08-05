@@ -3,8 +3,6 @@
 	using System;
 	using System.Runtime.Serialization;
 
-	using DomHelpers.SlcObject_Linking;
-
 	[Serializable]
 	public class ValidationException : Exception
 	{

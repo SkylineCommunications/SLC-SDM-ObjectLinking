@@ -15,8 +15,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectLinking.GQI", "API.GQ
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectLinking.Install", "Install\ObjectLinking.Install.csproj", "{1D34918E-781E-42F1-9D86-A9501645ECA8}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ObjectLinking.Shared", "Shared\ObjectLinking.Shared.shproj", "{C3D5B2D3-3A0E-4267-8EF0-28775494CDCA}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Internal", "Internal", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Code Analysis", "Code Analysis", "{095237AB-DDB9-4DFD-AE8E-C2E997C6F584}"
@@ -65,10 +63,5 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B1F7F865-1A7C-407B-A2C7-70A7CE6A7E91}
-	EndGlobalSection
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		Shared\ObjectLinking.Shared.projitems*{1d34918e-781e-42f1-9d86-a9501645eca8}*SharedItemsImports = 5
-		Shared\ObjectLinking.Shared.projitems*{90ce07e8-fd52-4054-a52c-18408fac51fb}*SharedItemsImports = 5
-		Shared\ObjectLinking.Shared.projitems*{c3d5b2d3-3a0e-4267-8ef0-28775494cdca}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal

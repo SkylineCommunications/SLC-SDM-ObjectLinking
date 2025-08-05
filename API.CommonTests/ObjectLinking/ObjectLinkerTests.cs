@@ -4,6 +4,7 @@
 
 	using Skyline.DataMiner.Net.Messages.SLDataGateway;
 	using Skyline.DataMiner.SDM.ObjectLinking.Exceptions;
+	using Skyline.DataMiner.SDM.ObjectLinking.Install.DOM;
 	using Skyline.DataMiner.Utils.DOM.UnitTesting;
 
 	[TestClass]
@@ -15,7 +16,7 @@
 		public void Setup()
 		{
 			_connection = new DomConnectionMock();
-			Script.InstallDomModule(_connection);
+			new DomInstaller(_connection).InstallDefaultContent();
 		}
 
 		[TestMethod]
@@ -104,7 +105,7 @@
 
 			linker.Links.Create(entity1, entity2);
 			linker.Links.Create(entity2, entity3);
-			linker.Links.Create(entity3 , entity1);
+			linker.Links.Create(entity3, entity1);
 
 			long result = -1;
 			var act = () => result = linker.Links.Count(LinkExposers.Entities.SolutionName.Equal("Solution Z"));

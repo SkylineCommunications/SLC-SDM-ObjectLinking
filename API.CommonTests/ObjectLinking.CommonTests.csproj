@@ -18,4 +18,8 @@
 		<ProjectReference Include="..\API.Common\ObjectLinking.Common.csproj" />
 		<ProjectReference Include="..\Install\ObjectLinking.Install.csproj" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="ModelRegistration\" />
+	</ItemGroup>
 </Project>

@@ -51,15 +51,10 @@ DATE		VERSION		AUTHOR			COMMENTS
 
 using System;
 
-using DomHelpers.SlcObject_Linking;
-
 using Skyline.AppInstaller;
 using Skyline.DataMiner.Automation;
-using Skyline.DataMiner.Net;
 using Skyline.DataMiner.Net.AppPackages;
-using Skyline.DataMiner.Net.Apps.DataMinerObjectModel;
-using Skyline.DataMiner.Net.Apps.Modules;
-using Skyline.DataMiner.Utils.DOM.Builders;
+using Skyline.DataMiner.SDM.ObjectLinking.Install.DOM;
 
 /// <summary>
 /// DataMiner Script Class.
@@ -81,80 +76,12 @@ public class Script
 			var installer = new AppInstaller(Engine.SLNetRaw, context);
 			installer.InstallDefaultContent();
 
-			InstallDomModule(engine.GetUserConnection(), installer.Log);
+			var domInstaller = new DomInstaller(engine.GetUserConnection(), installer.Log);
+			domInstaller.InstallDefaultContent();
 		}
 		catch (Exception e)
 		{
 			engine.ExitFail($"Exception encountered during installation: {e}");
 		}
-	}
-
-	public static void InstallDomModule(IConnection connection, Action<string> logMethod = null)
-	{
-		var moduleHelper = new ModuleSettingsHelper(connection.HandleMessages);
-		var module = new DomModuleBuilder()
-			.WithModuleId(SlcObject_LinkingIds.ModuleId)
-			.WithInformationEvents(false)
-			.WithHistory(false)
-			.Build();
-		moduleHelper.ModuleSettings.Create(module);
-		logMethod?.Invoke("Installed module settings for Object Linking");
-
-		var domHelper = new DomHelper(connection.HandleMessages, SlcObject_LinkingIds.ModuleId);
-		var entitySection = new SectionDefinitionBuilder()
-			.WithName("Entity")
-			.WithID(SlcObject_LinkingIds.Sections.Entity.Id)
-			.AddFieldDescriptor(new FieldDescriptorBuilder()
-				.WithID(SlcObject_LinkingIds.Sections.Entity.ID)
-				.WithName("ID")
-				.WithType(typeof(string))
-				.WithIsOptional(true)
-				.WithTooltip("The unique identifier of the entity."))
-			.AddFieldDescriptor(new FieldDescriptorBuilder()
-				.WithID(SlcObject_LinkingIds.Sections.Entity.DisplayName)
-				.WithName("Display Name")
-				.WithType(typeof(string))
-				.WithIsOptional(true)
-				.WithTooltip("The display name of the entity."))
-			.AddFieldDescriptor(new FieldDescriptorBuilder()
-				.WithID(SlcObject_LinkingIds.Sections.Entity.ModelName)
-				.WithName("Model Name")
-				.WithType(typeof(string))
-				.WithIsOptional(true)
-				.WithTooltip("The name of the model the enitity is associated with."))
-			.AddFieldDescriptor(new FieldDescriptorBuilder()
-				.WithID(SlcObject_LinkingIds.Sections.Entity.SolutionName)
-				.WithName("Solution Name")
-				.WithType(typeof(string))
-				.WithIsOptional(true)
-				.WithTooltip("The name of the solution the entity is associated with."))
-			.AddFieldDescriptor(new FieldDescriptorBuilder()
-				.WithID(SlcObject_LinkingIds.Sections.Entity.ParentID)
-				.WithName("Parent ID")
-				.WithType(typeof(string))
-				.WithIsOptional(true)
-				.WithTooltip("The unique identifier of the parent enitity."))
-			.AddFieldDescriptor(new FieldDescriptorBuilder()
-				.WithID(SlcObject_LinkingIds.Sections.Entity.ParentModelName)
-				.WithName("Parent Model Name")
-				.WithType(typeof(string))
-				.WithIsOptional(true)
-				.WithTooltip("The model name of the parent entity"))
-			.Build();
-		domHelper.SectionDefinitions.Create(entitySection);
-		logMethod?.Invoke("Installed section definition for Entity");
-
-		var linkDefinition = new DomDefinitionBuilder()
-			.WithID(SlcObject_LinkingIds.Definitions.Link.Id)
-			.WithName("Link")
-			.AddSectionDefinitionLink(new Skyline.DataMiner.Net.Apps.Sections.SectionDefinitions.SectionDefinitionLink
-			{
-				SectionDefinitionID = SlcObject_LinkingIds.Sections.Entity.Id,
-				AllowMultipleSections = true,
-				IsOptional = true,
-			})
-			.Build();
-		domHelper.DomDefinitions.Create(linkDefinition);
-		logMethod?.Invoke("Installed DOM definition for Link");
 	}
 }

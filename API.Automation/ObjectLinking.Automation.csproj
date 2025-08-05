@@ -5,7 +5,7 @@
 		<Nullable>disable</Nullable>
 		<AssemblyName>Skyline.DataMiner.SDM.ObjectLinking.Automation</AssemblyName>
 		<RootNamespace>Skyline.DataMiner.SDM.ObjectLinking</RootNamespace>
-		<Version>0.0.0-B002</Version>
+		<Version>0.0.0-B003</Version>
 		<PackageTags>Skyline;DataMiner</PackageTags>
 		<PackageProjectUrl>https://skyline.be</PackageProjectUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>

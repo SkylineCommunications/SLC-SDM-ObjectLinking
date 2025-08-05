@@ -5,7 +5,7 @@
 		<Nullable>disable</Nullable>
 		<AssemblyName>Skyline.DataMiner.SDM.ObjectLinking.Protocol</AssemblyName>
 		<RootNamespace>Skyline.DataMiner.SDM.ObjectLinking</RootNamespace>
-		<Version>0.0.0-B002</Version>
+		<Version>0.0.0-B003</Version>
 		<PackageTags>Skyline;DataMiner</PackageTags>
 		<PackageProjectUrl>https://skyline.be</PackageProjectUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
@@ -36,7 +36,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\API.Common\ObjectLinking.Common.csproj" />
+		<ProjectReference Include="..\API.Common\ObjectLinking.Common.csproj" />
 	</ItemGroup>
 
 	<!-- Can be used to set the location of your local nuget store to copy to -->

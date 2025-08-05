@@ -2,6 +2,7 @@
 	<PropertyGroup>
 		<TargetFramework>net48</TargetFramework>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<RootNamespace>Skyline.DataMiner.SDM.ObjectLinking.Install</RootNamespace>
 	</PropertyGroup>
 	<PropertyGroup>
 		<DataMinerType>Package</DataMinerType>
@@ -23,5 +24,7 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 	</ItemGroup>
-	<Import Project="..\Shared\ObjectLinking.Shared.projitems" Label="Shared" />
+	<ItemGroup>
+	  <ProjectReference Include="..\API.Common\ObjectLinking.Common.csproj" />
+	</ItemGroup>
 </Project>
