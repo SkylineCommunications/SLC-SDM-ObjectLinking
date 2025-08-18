@@ -32,6 +32,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{384197A6-2879-4B9A-91C1-CC07BBBB31F9}"
 	ProjectSection(SolutionItems) = preProject
+		.github\CODEOWNERS = .github\CODEOWNERS
 		.github\dependabot.yml = .github\dependabot.yml
 	EndProjectSection
 EndProject
@@ -40,6 +41,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		.github\workflows\Installer.yml = .github\workflows\Installer.yml
 		.github\workflows\Nuget.yml = .github\workflows\Nuget.yml
 	EndProjectSection
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Shared", "Shared\Shared.shproj", "{CD239CD2-ACEB-445D-A037-AB12C799442B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -82,5 +85,10 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B1F7F865-1A7C-407B-A2C7-70A7CE6A7E91}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Shared\Shared.projitems*{1d34918e-781e-42f1-9d86-a9501645eca8}*SharedItemsImports = 5
+		Shared\Shared.projitems*{90ce07e8-fd52-4054-a52c-18408fac51fb}*SharedItemsImports = 5
+		Shared\Shared.projitems*{cd239cd2-aceb-445d-a037-ab12c799442b}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal

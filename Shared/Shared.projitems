@@ -3,9 +3,12 @@
   <PropertyGroup>
     <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
     <HasSharedItems>true</HasSharedItems>
-    <SharedGUID>c3d5b2d3-3a0e-4267-8ef0-28775494cdca</SharedGUID>
+    <SharedGUID>cd239cd2-aceb-445d-a037-ab12c799442b</SharedGUID>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
-    <Import_RootNamespace>ObjectLinking.Shared</Import_RootNamespace>
+    <Import_RootNamespace>Shared</Import_RootNamespace>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Maps\SlcObject_LinkingIds.cs" />
+  </ItemGroup>
 </Project>

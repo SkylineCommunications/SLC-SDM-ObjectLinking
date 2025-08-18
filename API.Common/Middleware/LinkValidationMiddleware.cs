@@ -4,9 +4,6 @@ namespace Skyline.DataMiner.SDM.ObjectLinking.Middleware
 {
 	using System;
 	using System.Collections.Generic;
-	using System.Collections.ObjectModel;
-	using System.Linq;
-	using System.Text;
 
 	using Skyline.DataMiner.Net.Messages.SLDataGateway;
 	using Skyline.DataMiner.SDM.ObjectLinking.Exceptions;

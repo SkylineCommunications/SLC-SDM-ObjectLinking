@@ -3,6 +3,7 @@
 	using DomHelpers.SlcObject_Linking;
 
 	using Skyline.DataMiner.Net.Apps.DataMinerObjectModel;
+	using Skyline.DataMiner.Net.Sections;
 	using Skyline.DataMiner.Utils.DOM.Builders;
 
 	public partial class DomInstaller
@@ -49,7 +50,8 @@
 					.WithIsOptional(true)
 					.WithTooltip("The model name of the parent entity"))
 				.Build();
-			helper.SectionDefinitions.Create(entitySection);
+
+			Import(helper.SectionDefinitions, SectionDefinitionExposers.ID.Equal(SlcObject_LinkingIds.Sections.Entity.Id), entitySection);
 			Log("Installed section definition for Entity");
 
 			var linkDefinition = new DomDefinitionBuilder()
@@ -62,7 +64,8 @@
 					IsOptional = true,
 				})
 				.Build();
-			helper.DomDefinitions.Create(linkDefinition);
+
+			Import(helper.DomDefinitions, DomDefinitionExposers.Id.Equal(SlcObject_LinkingIds.Definitions.Link), linkDefinition);
 			Log("Installed DOM definition for Link");
 		}
 	}

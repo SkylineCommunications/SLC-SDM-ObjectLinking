@@ -6,7 +6,7 @@
 		<Nullable>disable</Nullable>
 		<AssemblyName>Skyline.DataMiner.SDM.ObjectLinking.Common</AssemblyName>
 		<RootNamespace>Skyline.DataMiner.SDM.ObjectLinking</RootNamespace>
-		<Version>0.0.0-B003</Version>
+		<Version>0.0.0-B004</Version>
 		<PackageTags>Skyline;DataMiner</PackageTags>
 		<PackageProjectUrl>https://skyline.be</PackageProjectUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
@@ -30,8 +30,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="Skyline.DataMiner.SDM.Abstractions" Version="0.0.0-alpha19" />
-		<PackageReference Include="Skyline.DataMiner.SDM.SourceGenerator" Version="0.0.0-alpha19" OutputItemType="Analyzer" ReferenceoutputAssembly="false" />
+		<PackageReference Include="Skyline.DataMiner.SDM.Abstractions" Version="0.0.0-alpha21" />
+		<PackageReference Include="Skyline.DataMiner.SDM.SourceGenerator" Version="0.0.0-alpha21" OutputItemType="Analyzer" ReferenceoutputAssembly="false" />
 		<PackageReference Include="Skyline.DataMiner.Utils.SecureCoding.Analyzers" Version="2.1.0">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -39,8 +39,8 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
-		<PackageReference Include="Skyline.DataMiner.Files.Skyline.DataMiner.Storage.Types" Version="10.5.6" />
-		<PackageReference Include="Skyline.DataMiner.Files.SLNetTypes" Version="10.5.6" />
+		<PackageReference Include="Skyline.DataMiner.Files.Skyline.DataMiner.Storage.Types" Version="10.5.2" />
+		<PackageReference Include="Skyline.DataMiner.Files.SLNetTypes" Version="10.5.2" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
@@ -54,6 +54,8 @@
 		<InternalsVisibleTo Include="ObjectLinking.Install" />
 		<InternalsVisibleTo Include="ObjectLinking.Protocol" />
 	</ItemGroup>
+
+	<Import Project="..\Shared\Shared.projitems" Label="Shared" />
 
 	<!-- Can be used to set the location of your local nuget store to copy to -->
 	<Import Project="../Directory.Build.props.user" Condition="Exists('../Directory.Build.props.user')" />

@@ -103,9 +103,9 @@
 				ParentModelName = "Parent Model C",
 			};
 
-			linker.Links.Create(entity1, entity2);
-			linker.Links.Create(entity2, entity3);
-			linker.Links.Create(entity3, entity1);
+			linker.Create(entity1, entity2);
+			linker.Create(entity2, entity3);
+			linker.Create(entity3, entity1);
 
 			long result = -1;
 			var act = () => result = linker.Links.Count(LinkExposers.Entities.SolutionName.Equal("Solution Z"));
