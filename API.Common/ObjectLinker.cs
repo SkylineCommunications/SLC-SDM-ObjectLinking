@@ -39,11 +39,11 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 		/// <param name="entityA">The first entity to link.</param>
 		/// <param name="entityB">The second entity to link.</param>
 		/// <exception cref="ArgumentNullException">Thrown if <paramref name="entityA"/> or <paramref name="entityB"/> is <c>null</c>.</exception>
-		public void Create(Entity entityA, Entity entityB)
+		public void Create(EntityDescriptor entityA, EntityDescriptor entityB)
 		{
 			Links.Create(new Link
 			{
-				Entities =
+				EntityDescriptors =
 				{
 					entityA ?? throw new ArgumentNullException(nameof(entityA)),
 					entityB ?? throw new ArgumentNullException(nameof(entityB)),
@@ -57,7 +57,7 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 		/// <param name="entity">The entity to search for.</param>
 		/// <returns>A list of <see cref="Link"/> objects referencing the entity.</returns>
 		/// <exception cref="ArgumentNullException">Thrown if <paramref name="entity"/> is <c>null</c>.</exception>
-		public List<Link> GetLinksByEntity(Entity entity)
+		public List<Link> GetLinksByEntity(EntityDescriptor entity)
 		{
 			return GetLinksByEntity(entity?.ID ?? throw new ArgumentNullException(nameof(entity)));
 		}
@@ -95,7 +95,7 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 
 			var result = new List<Link>();
 
-			foreach (var page in Links.ReadPaged(LinkExposers.Entities.ID.Equal(entityId)))
+			foreach (var page in Links.ReadPaged(LinkExposers.EntityDescriptors.ID.Equal(entityId)))
 			{
 				result.AddRange(page);
 			}
@@ -107,9 +107,9 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 		/// Gets all entities that are linked to the specified entity.
 		/// </summary>
 		/// <param name="entity">The entity to find linked entities for.</param>
-		/// <returns>A list of <see cref="Entity"/> objects linked to the specified entity.</returns>
+		/// <returns>A list of <see cref="EntityDescriptor"/> objects linked to the specified entity.</returns>
 		/// <exception cref="ArgumentNullException">Thrown if <paramref name="entity"/> is <c>null</c>.</exception>
-		public List<Entity> GetLinkedEntities(Entity entity)
+		public List<EntityDescriptor> GetLinkedEntities(EntityDescriptor entity)
 		{
 			return GetLinkedEntities(entity?.ID ?? throw new ArgumentNullException(nameof(entity)));
 		}
@@ -119,9 +119,9 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 		/// </summary>
 		/// <typeparam name="T">The type of the SDM object.</typeparam>
 		/// <param name="sdmObject">The SDM object to find linked entities for.</param>
-		/// <returns>A list of <see cref="Entity"/> objects linked to the specified SDM object.</returns>
+		/// <returns>A list of <see cref="EntityDescriptor"/> objects linked to the specified SDM object.</returns>
 		/// <exception cref="ArgumentNullException">Thrown if <paramref name="sdmObject"/> is <c>null</c>.</exception>
-		public List<Entity> GetLinkedEntities<T>(SdmObject<T> sdmObject)
+		public List<EntityDescriptor> GetLinkedEntities<T>(SdmObject<T> sdmObject)
 			where T : SdmObject<T>
 		{
 			if (sdmObject is null)
@@ -136,22 +136,22 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 		/// Gets all entities that are linked to the specified entity ID.
 		/// </summary>
 		/// <param name="entityId">The ID of the entity to find linked entities for.</param>
-		/// <returns>A list of <see cref="Entity"/> objects linked to the specified entity ID.</returns>
+		/// <returns>A list of <see cref="EntityDescriptor"/> objects linked to the specified entity ID.</returns>
 		/// <exception cref="ArgumentNullException">Thrown if <paramref name="entityId"/> is <c>null</c> or empty.</exception>
-		public List<Entity> GetLinkedEntities(string entityId)
+		public List<EntityDescriptor> GetLinkedEntities(string entityId)
 		{
 			if (String.IsNullOrEmpty(entityId))
 			{
 				throw new ArgumentNullException(nameof(entityId));
 			}
 
-			var result = new List<Entity>();
+			var result = new List<EntityDescriptor>();
 
-			foreach (var page in Links.ReadPaged(LinkExposers.Entities.ID.Equal(entityId)))
+			foreach (var page in Links.ReadPaged(LinkExposers.EntityDescriptors.ID.Equal(entityId)))
 			{
 				result.AddRange(
 					page.SelectMany(l =>
-						l.Entities.Where(e => e.ID != entityId)));
+						l.EntityDescriptors.Where(e => e.ID != entityId)));
 			}
 
 			return result;

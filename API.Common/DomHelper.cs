@@ -513,9 +513,9 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 		}
 
 		/// <summary>
-		/// Gets or sets the Entity section of the DOM Instance.
+		/// Gets or sets the EntityDescriptor section of the DOM Instance.
 		/// </summary>
-		public IList<Entity> Entities { get; private set; }
+		public IList<EntityDescriptor> EntityDescriptors { get; private set; }
 
 		public static explicit operator Link(DomInstance instance)
 		{
@@ -552,7 +552,7 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 		protected sealed override DomInstance InternalToInstance()
 		{
 			domInstance.Sections.Clear();
-			foreach (var item in Entities)
+			foreach (var item in EntityDescriptors)
 			{
 				domInstance.Sections.Add(item.ToSection());
 			}
@@ -577,7 +577,7 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 
 		protected sealed override void InitializeProperties()
 		{
-			Entities = domInstance.Sections.Where(section => section.SectionDefinitionID.Equals(SlcObject_LinkingIds.Sections.Entity.Id)).Select(section => new Entity(section)).ToList();
+			EntityDescriptors = domInstance.Sections.Where(section => section.SectionDefinitionID.Equals(SlcObject_LinkingIds.Sections.EntityDescriptor.Id)).Select(section => new EntityDescriptor(section)).ToList();
 		}
 	}
 }
@@ -603,23 +603,23 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 	using Skyline.DataMiner.Net.Sections;
 
 	/// <summary>
-	/// Represents a wrapper class for accessing a Entity section.
-	/// The <see cref="Entity"/> class provides simplified access to the data and functionality of the underlying DOM section, allowing for easier manipulation and retrieval of data from DOM.
+	/// Represents a wrapper class for accessing a EntityDescriptor section.
+	/// The <see cref="EntityDescriptor"/> class provides simplified access to the data and functionality of the underlying DOM section, allowing for easier manipulation and retrieval of data from DOM.
 	/// </summary>
-	public partial class Entity : DomSectionBase
+	public partial class EntityDescriptor : DomSectionBase
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Entity"/> class. Creates an empty <see cref="Entity"/> object with default settings.
+		/// Initializes a new instance of the <see cref="EntityDescriptor"/> class. Creates an empty <see cref="EntityDescriptor"/> object with default settings.
 		/// </summary>
-		public Entity() : base(SlcObject_LinkingIds.Sections.Entity.Id)
+		public EntityDescriptor() : base(SlcObject_LinkingIds.Sections.EntityDescriptor.Id)
 		{
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Entity"/> class using the specified <paramref name="section"/> for initializing the object.
+		/// Initializes a new instance of the <see cref="EntityDescriptor"/> class using the specified <paramref name="section"/> for initializing the object.
 		/// </summary>
-		/// <param name="section">The <see cref="Section"/> object that provides data for initializing the <see cref="Entity"/>. If the section is <c>null</c>, the constructor will not perform any initialization.</param>
-		public Entity(Section section) : base(section, SlcObject_LinkingIds.Sections.Entity.Id)
+		/// <param name="section">The <see cref="Section"/> object that provides data for initializing the <see cref="EntityDescriptor"/>. If the section is <c>null</c>, the constructor will not perform any initialization.</param>
+		public EntityDescriptor(Section section) : base(section, SlcObject_LinkingIds.Sections.EntityDescriptor.Id)
 		{
 		}
 
@@ -642,7 +642,7 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 		{
 			get
 			{
-				var wrapper = section.GetValue<String>(SlcObject_LinkingIds.Sections.Entity.ID);
+				var wrapper = section.GetValue<String>(SlcObject_LinkingIds.Sections.EntityDescriptor.ID);
 				if (wrapper != null)
 				{
 					return (String)wrapper.Value;
@@ -657,11 +657,11 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 			{
 				if (value == null)
 				{
-					section.RemoveFieldValueById(SlcObject_LinkingIds.Sections.Entity.ID);
+					section.RemoveFieldValueById(SlcObject_LinkingIds.Sections.EntityDescriptor.ID);
 				}
 				else
 				{
-					section.AddOrUpdateValue(SlcObject_LinkingIds.Sections.Entity.ID, (String)value);
+					section.AddOrUpdateValue(SlcObject_LinkingIds.Sections.EntityDescriptor.ID, (String)value);
 				}
 			}
 		}
@@ -685,7 +685,7 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 		{
 			get
 			{
-				var wrapper = section.GetValue<String>(SlcObject_LinkingIds.Sections.Entity.DisplayName);
+				var wrapper = section.GetValue<String>(SlcObject_LinkingIds.Sections.EntityDescriptor.DisplayName);
 				if (wrapper != null)
 				{
 					return (String)wrapper.Value;
@@ -700,11 +700,11 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 			{
 				if (value == null)
 				{
-					section.RemoveFieldValueById(SlcObject_LinkingIds.Sections.Entity.DisplayName);
+					section.RemoveFieldValueById(SlcObject_LinkingIds.Sections.EntityDescriptor.DisplayName);
 				}
 				else
 				{
-					section.AddOrUpdateValue(SlcObject_LinkingIds.Sections.Entity.DisplayName, (String)value);
+					section.AddOrUpdateValue(SlcObject_LinkingIds.Sections.EntityDescriptor.DisplayName, (String)value);
 				}
 			}
 		}
@@ -728,7 +728,7 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 		{
 			get
 			{
-				var wrapper = section.GetValue<String>(SlcObject_LinkingIds.Sections.Entity.ModelName);
+				var wrapper = section.GetValue<String>(SlcObject_LinkingIds.Sections.EntityDescriptor.ModelName);
 				if (wrapper != null)
 				{
 					return (String)wrapper.Value;
@@ -743,11 +743,11 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 			{
 				if (value == null)
 				{
-					section.RemoveFieldValueById(SlcObject_LinkingIds.Sections.Entity.ModelName);
+					section.RemoveFieldValueById(SlcObject_LinkingIds.Sections.EntityDescriptor.ModelName);
 				}
 				else
 				{
-					section.AddOrUpdateValue(SlcObject_LinkingIds.Sections.Entity.ModelName, (String)value);
+					section.AddOrUpdateValue(SlcObject_LinkingIds.Sections.EntityDescriptor.ModelName, (String)value);
 				}
 			}
 		}
@@ -771,7 +771,7 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 		{
 			get
 			{
-				var wrapper = section.GetValue<String>(SlcObject_LinkingIds.Sections.Entity.SolutionName);
+				var wrapper = section.GetValue<String>(SlcObject_LinkingIds.Sections.EntityDescriptor.SolutionName);
 				if (wrapper != null)
 				{
 					return (String)wrapper.Value;
@@ -786,11 +786,11 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 			{
 				if (value == null)
 				{
-					section.RemoveFieldValueById(SlcObject_LinkingIds.Sections.Entity.SolutionName);
+					section.RemoveFieldValueById(SlcObject_LinkingIds.Sections.EntityDescriptor.SolutionName);
 				}
 				else
 				{
-					section.AddOrUpdateValue(SlcObject_LinkingIds.Sections.Entity.SolutionName, (String)value);
+					section.AddOrUpdateValue(SlcObject_LinkingIds.Sections.EntityDescriptor.SolutionName, (String)value);
 				}
 			}
 		}
@@ -814,7 +814,7 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 		{
 			get
 			{
-				var wrapper = section.GetValue<String>(SlcObject_LinkingIds.Sections.Entity.ParentID);
+				var wrapper = section.GetValue<String>(SlcObject_LinkingIds.Sections.EntityDescriptor.ParentID);
 				if (wrapper != null)
 				{
 					return (String)wrapper.Value;
@@ -829,11 +829,11 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 			{
 				if (value == null)
 				{
-					section.RemoveFieldValueById(SlcObject_LinkingIds.Sections.Entity.ParentID);
+					section.RemoveFieldValueById(SlcObject_LinkingIds.Sections.EntityDescriptor.ParentID);
 				}
 				else
 				{
-					section.AddOrUpdateValue(SlcObject_LinkingIds.Sections.Entity.ParentID, (String)value);
+					section.AddOrUpdateValue(SlcObject_LinkingIds.Sections.EntityDescriptor.ParentID, (String)value);
 				}
 			}
 		}
@@ -857,7 +857,7 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 		{
 			get
 			{
-				var wrapper = section.GetValue<String>(SlcObject_LinkingIds.Sections.Entity.ParentModelName);
+				var wrapper = section.GetValue<String>(SlcObject_LinkingIds.Sections.EntityDescriptor.ParentModelName);
 				if (wrapper != null)
 				{
 					return (String)wrapper.Value;
@@ -872,33 +872,33 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 			{
 				if (value == null)
 				{
-					section.RemoveFieldValueById(SlcObject_LinkingIds.Sections.Entity.ParentModelName);
+					section.RemoveFieldValueById(SlcObject_LinkingIds.Sections.EntityDescriptor.ParentModelName);
 				}
 				else
 				{
-					section.AddOrUpdateValue(SlcObject_LinkingIds.Sections.Entity.ParentModelName, (String)value);
+					section.AddOrUpdateValue(SlcObject_LinkingIds.Sections.EntityDescriptor.ParentModelName, (String)value);
 				}
 			}
 		}
 
 		/// <summary>
-		/// Creates a deep copy of the current <see cref="Entity"/>.
+		/// Creates a deep copy of the current <see cref="EntityDescriptor"/>.
 		/// </summary>
-		/// <returns>A new <see cref="Entity"/> object that is a deep copy of this section.</returns>
-		public Entity Clone()
+		/// <returns>A new <see cref="EntityDescriptor"/> object that is a deep copy of this section.</returns>
+		public EntityDescriptor Clone()
 		{
-			return new Entity((Section)this.ToSection().Clone());
+			return new EntityDescriptor((Section)this.ToSection().Clone());
 		}
 
 		/// <summary>
-		/// Creates a duplicate of the current <see cref="Entity"/> with a new id.
+		/// Creates a duplicate of the current <see cref="EntityDescriptor"/> with a new id.
 		/// </summary>
-		/// <returns>A new <see cref="Entity"/> object that is a copy of this section but with a different id.</returns>
-		public Entity Duplicate()
+		/// <returns>A new <see cref="EntityDescriptor"/> object that is a copy of this section but with a different id.</returns>
+		public EntityDescriptor Duplicate()
 		{
 			var section = (Section)this.ToSection().Clone();
 			section.ID = new SectionID(Guid.NewGuid());
-			return new Entity(section);
+			return new EntityDescriptor(section);
 		}
 	}
 }
@@ -929,8 +929,8 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 		public static readonly Exposer<Link, DateTime> LastModified = new Exposer<Link, DateTime>((obj) => obj.LastModified.GetValueOrDefault(), nameof(Link.LastModified));
 		public static readonly Exposer<Link, string> LastModifiedBy = new Exposer<Link, string>((obj) => obj.LastModifiedBy, nameof(Link.LastModifiedBy));
 		private static Dictionary<System.Reflection.MemberInfo, FieldExposer> ExposerMap = new Dictionary<System.Reflection.MemberInfo, FieldExposer>(MemberComparer.Instance)
-		{{typeof(Link).GetProperty(nameof(Link.Guid)), LinkExposers.Guid}, {typeof(Link).GetProperty(nameof(Link.CreatedAt)), LinkExposers.CreatedAt}, {typeof(Link).GetProperty(nameof(Link.CreatedBy)), LinkExposers.CreatedBy}, {typeof(Link).GetProperty(nameof(Link.LastModified)), LinkExposers.LastModified}, {typeof(Link).GetProperty(nameof(Link.LastModifiedBy)), LinkExposers.LastModifiedBy}, {typeof(Entity).GetProperty(nameof(Entity.ID)), Entities.ID}, {typeof(Entity).GetProperty(nameof(Entity.DisplayName)), Entities.DisplayName}, {typeof(Entity).GetProperty(nameof(Entity.ModelName)), Entities.ModelName}, {typeof(Entity).GetProperty(nameof(Entity.SolutionName)), Entities.SolutionName}, {typeof(Entity).GetProperty(nameof(Entity.ParentID)), Entities.ParentID}, {typeof(Entity).GetProperty(nameof(Entity.ParentModelName)), Entities.ParentModelName}};
-		private static Dictionary<FieldExposer, Func<Skyline.DataMiner.Net.Messages.SLDataGateway.Comparer, object, FilterElement<Link>>> FilterMap = new Dictionary<FieldExposer, Func<Skyline.DataMiner.Net.Messages.SLDataGateway.Comparer, object, FilterElement<Link>>> { { LinkExposers.Guid, (comparer, value) => FilterElementFactory.Create(LinkExposers.Guid, comparer, (Guid)value) }, { LinkExposers.CreatedAt, (comparer, value) => FilterElementFactory.Create(LinkExposers.CreatedAt, comparer, (DateTime)value) }, { LinkExposers.CreatedBy, (comparer, value) => FilterElementFactory.Create(LinkExposers.CreatedBy, comparer, (string)value) }, { LinkExposers.LastModified, (comparer, value) => FilterElementFactory.Create(LinkExposers.LastModified, comparer, (DateTime)value) }, { LinkExposers.LastModifiedBy, (comparer, value) => FilterElementFactory.Create(LinkExposers.LastModifiedBy, comparer, (string)value) }, { Entities.ID, (comparer, value) => FilterElementFactory.Create(Entities.ID, comparer, (string)value) }, { Entities.DisplayName, (comparer, value) => FilterElementFactory.Create(Entities.DisplayName, comparer, (string)value) }, { Entities.ModelName, (comparer, value) => FilterElementFactory.Create(Entities.ModelName, comparer, (string)value) }, { Entities.SolutionName, (comparer, value) => FilterElementFactory.Create(Entities.SolutionName, comparer, (string)value) }, { Entities.ParentID, (comparer, value) => FilterElementFactory.Create(Entities.ParentID, comparer, (string)value) }, { Entities.ParentModelName, (comparer, value) => FilterElementFactory.Create(Entities.ParentModelName, comparer, (string)value) } };
+		{{typeof(Link).GetProperty(nameof(Link.Guid)), LinkExposers.Guid}, {typeof(Link).GetProperty(nameof(Link.CreatedAt)), LinkExposers.CreatedAt}, {typeof(Link).GetProperty(nameof(Link.CreatedBy)), LinkExposers.CreatedBy}, {typeof(Link).GetProperty(nameof(Link.LastModified)), LinkExposers.LastModified}, {typeof(Link).GetProperty(nameof(Link.LastModifiedBy)), LinkExposers.LastModifiedBy}, {typeof(EntityDescriptor).GetProperty(nameof(EntityDescriptor.ID)), EntityDescriptors.ID}, {typeof(EntityDescriptor).GetProperty(nameof(EntityDescriptor.DisplayName)), EntityDescriptors.DisplayName}, {typeof(EntityDescriptor).GetProperty(nameof(EntityDescriptor.ModelName)), EntityDescriptors.ModelName}, {typeof(EntityDescriptor).GetProperty(nameof(EntityDescriptor.SolutionName)), EntityDescriptors.SolutionName}, {typeof(EntityDescriptor).GetProperty(nameof(EntityDescriptor.ParentID)), EntityDescriptors.ParentID}, {typeof(EntityDescriptor).GetProperty(nameof(EntityDescriptor.ParentModelName)), EntityDescriptors.ParentModelName}};
+		private static Dictionary<FieldExposer, Func<Skyline.DataMiner.Net.Messages.SLDataGateway.Comparer, object, FilterElement<Link>>> FilterMap = new Dictionary<FieldExposer, Func<Skyline.DataMiner.Net.Messages.SLDataGateway.Comparer, object, FilterElement<Link>>> { { LinkExposers.Guid, (comparer, value) => FilterElementFactory.Create(LinkExposers.Guid, comparer, (Guid)value) }, { LinkExposers.CreatedAt, (comparer, value) => FilterElementFactory.Create(LinkExposers.CreatedAt, comparer, (DateTime)value) }, { LinkExposers.CreatedBy, (comparer, value) => FilterElementFactory.Create(LinkExposers.CreatedBy, comparer, (string)value) }, { LinkExposers.LastModified, (comparer, value) => FilterElementFactory.Create(LinkExposers.LastModified, comparer, (DateTime)value) }, { LinkExposers.LastModifiedBy, (comparer, value) => FilterElementFactory.Create(LinkExposers.LastModifiedBy, comparer, (string)value) }, { EntityDescriptors.ID, (comparer, value) => FilterElementFactory.Create(EntityDescriptors.ID, comparer, (string)value) }, { EntityDescriptors.DisplayName, (comparer, value) => FilterElementFactory.Create(EntityDescriptors.DisplayName, comparer, (string)value) }, { EntityDescriptors.ModelName, (comparer, value) => FilterElementFactory.Create(EntityDescriptors.ModelName, comparer, (string)value) }, { EntityDescriptors.SolutionName, (comparer, value) => FilterElementFactory.Create(EntityDescriptors.SolutionName, comparer, (string)value) }, { EntityDescriptors.ParentID, (comparer, value) => FilterElementFactory.Create(EntityDescriptors.ParentID, comparer, (string)value) }, { EntityDescriptors.ParentModelName, (comparer, value) => FilterElementFactory.Create(EntityDescriptors.ParentModelName, comparer, (string)value) } };
 		public static FilterElement<Link> CreateFilter(System.Reflection.MemberInfo member, Skyline.DataMiner.Net.Messages.SLDataGateway.Comparer comparer, object value)
 		{
 			if (ExposerMap.TryGetValue(member, out var fieldExposer) && FilterMap.TryGetValue(fieldExposer, out var create))
@@ -951,14 +951,14 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 			return null;
 		}
 
-		public static class Entities
+		public static class EntityDescriptors
 		{
-			public static readonly DynamicListExposer<Link, string> ID = DynamicListExposer<Link, string>.CreateFromListExposer(new Exposer<Link, IEnumerable>((obj) => obj.Entities.Select(x => x.ID).Where(x => x != null), String.Join(".", nameof(Entity), nameof(ID))));
-			public static readonly DynamicListExposer<Link, string> DisplayName = DynamicListExposer<Link, string>.CreateFromListExposer(new Exposer<Link, IEnumerable>((obj) => obj.Entities.Select(x => x.DisplayName).Where(x => x != null), String.Join(".", nameof(Entity), nameof(DisplayName))));
-			public static readonly DynamicListExposer<Link, string> ModelName = DynamicListExposer<Link, string>.CreateFromListExposer(new Exposer<Link, IEnumerable>((obj) => obj.Entities.Select(x => x.ModelName).Where(x => x != null), String.Join(".", nameof(Entity), nameof(ModelName))));
-			public static readonly DynamicListExposer<Link, string> SolutionName = DynamicListExposer<Link, string>.CreateFromListExposer(new Exposer<Link, IEnumerable>((obj) => obj.Entities.Select(x => x.SolutionName).Where(x => x != null), String.Join(".", nameof(Entity), nameof(SolutionName))));
-			public static readonly DynamicListExposer<Link, string> ParentID = DynamicListExposer<Link, string>.CreateFromListExposer(new Exposer<Link, IEnumerable>((obj) => obj.Entities.Select(x => x.ParentID).Where(x => x != null), String.Join(".", nameof(Entity), nameof(ParentID))));
-			public static readonly DynamicListExposer<Link, string> ParentModelName = DynamicListExposer<Link, string>.CreateFromListExposer(new Exposer<Link, IEnumerable>((obj) => obj.Entities.Select(x => x.ParentModelName).Where(x => x != null), String.Join(".", nameof(Entity), nameof(ParentModelName))));
+			public static readonly DynamicListExposer<Link, string> ID = DynamicListExposer<Link, string>.CreateFromListExposer(new Exposer<Link, IEnumerable>((obj) => obj.EntityDescriptors.Select(x => x.ID).Where(x => x != null), String.Join(".", nameof(EntityDescriptor), nameof(ID))));
+			public static readonly DynamicListExposer<Link, string> DisplayName = DynamicListExposer<Link, string>.CreateFromListExposer(new Exposer<Link, IEnumerable>((obj) => obj.EntityDescriptors.Select(x => x.DisplayName).Where(x => x != null), String.Join(".", nameof(EntityDescriptor), nameof(DisplayName))));
+			public static readonly DynamicListExposer<Link, string> ModelName = DynamicListExposer<Link, string>.CreateFromListExposer(new Exposer<Link, IEnumerable>((obj) => obj.EntityDescriptors.Select(x => x.ModelName).Where(x => x != null), String.Join(".", nameof(EntityDescriptor), nameof(ModelName))));
+			public static readonly DynamicListExposer<Link, string> SolutionName = DynamicListExposer<Link, string>.CreateFromListExposer(new Exposer<Link, IEnumerable>((obj) => obj.EntityDescriptors.Select(x => x.SolutionName).Where(x => x != null), String.Join(".", nameof(EntityDescriptor), nameof(SolutionName))));
+			public static readonly DynamicListExposer<Link, string> ParentID = DynamicListExposer<Link, string>.CreateFromListExposer(new Exposer<Link, IEnumerable>((obj) => obj.EntityDescriptors.Select(x => x.ParentID).Where(x => x != null), String.Join(".", nameof(EntityDescriptor), nameof(ParentID))));
+			public static readonly DynamicListExposer<Link, string> ParentModelName = DynamicListExposer<Link, string>.CreateFromListExposer(new Exposer<Link, IEnumerable>((obj) => obj.EntityDescriptors.Select(x => x.ParentModelName).Where(x => x != null), String.Join(".", nameof(EntityDescriptor), nameof(ParentModelName))));
 		}
 	}
 }
@@ -974,6 +974,7 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 	using System.Collections.Generic;
 	using System.Linq;
 
+	using DomHelpers;
 	using DomHelpers.SlcObject_Linking;
 
 	using Skyline.DataMiner.Net;
@@ -998,7 +999,7 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 		private int _subscriberCount = 0;
 		private string _subscriptionSetId;
 		private SubscriptionFilter[] _subscriptionFilters;
-		internal LinkDomStorageProvider(IConnection connection)
+		public LinkDomStorageProvider(IConnection connection)
 		{
 			this.connection = connection;
 			this.helper = new DomHelper(connection.HandleMessages, DomHelpers.SlcObject_Linking.SlcObject_LinkingIds.ModuleId);
@@ -1504,18 +1505,18 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 		{
 			switch (fieldName)
 			{
-				case "Entity.ID":
-					return FilterElementFactory.Create(DomInstanceExposers.FieldValues.DomInstanceField(SlcObject_LinkingIds.Sections.Entity.ID), comparer, (string)value);
-				case "Entity.DisplayName":
-					return FilterElementFactory.Create(DomInstanceExposers.FieldValues.DomInstanceField(SlcObject_LinkingIds.Sections.Entity.DisplayName), comparer, (string)value);
-				case "Entity.ModelName":
-					return FilterElementFactory.Create(DomInstanceExposers.FieldValues.DomInstanceField(SlcObject_LinkingIds.Sections.Entity.ModelName), comparer, (string)value);
-				case "Entity.SolutionName":
-					return FilterElementFactory.Create(DomInstanceExposers.FieldValues.DomInstanceField(SlcObject_LinkingIds.Sections.Entity.SolutionName), comparer, (string)value);
-				case "Entity.ParentID":
-					return FilterElementFactory.Create(DomInstanceExposers.FieldValues.DomInstanceField(SlcObject_LinkingIds.Sections.Entity.ParentID), comparer, (string)value);
-				case "Entity.ParentModelName":
-					return FilterElementFactory.Create(DomInstanceExposers.FieldValues.DomInstanceField(SlcObject_LinkingIds.Sections.Entity.ParentModelName), comparer, (string)value);
+				case "EntityDescriptor.ID":
+					return FilterElementFactory.Create(DomInstanceExposers.FieldValues.DomInstanceField(SlcObject_LinkingIds.Sections.EntityDescriptor.ID), comparer, (string)value);
+				case "EntityDescriptor.DisplayName":
+					return FilterElementFactory.Create(DomInstanceExposers.FieldValues.DomInstanceField(SlcObject_LinkingIds.Sections.EntityDescriptor.DisplayName), comparer, (string)value);
+				case "EntityDescriptor.ModelName":
+					return FilterElementFactory.Create(DomInstanceExposers.FieldValues.DomInstanceField(SlcObject_LinkingIds.Sections.EntityDescriptor.ModelName), comparer, (string)value);
+				case "EntityDescriptor.SolutionName":
+					return FilterElementFactory.Create(DomInstanceExposers.FieldValues.DomInstanceField(SlcObject_LinkingIds.Sections.EntityDescriptor.SolutionName), comparer, (string)value);
+				case "EntityDescriptor.ParentID":
+					return FilterElementFactory.Create(DomInstanceExposers.FieldValues.DomInstanceField(SlcObject_LinkingIds.Sections.EntityDescriptor.ParentID), comparer, (string)value);
+				case "EntityDescriptor.ParentModelName":
+					return FilterElementFactory.Create(DomInstanceExposers.FieldValues.DomInstanceField(SlcObject_LinkingIds.Sections.EntityDescriptor.ParentModelName), comparer, (string)value);
 				case nameof(Link.Guid):
 					return FilterElementFactory.Create(DomInstanceExposers.Id, comparer, (Guid)value);
 				case nameof(Link.LastModified):
@@ -1535,18 +1536,18 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 		{
 			switch (fieldName)
 			{
-				case "Entity.ID":
-					return OrderByElementFactory.Create(DomInstanceExposers.FieldValues.DomInstanceField(SlcObject_LinkingIds.Sections.Entity.ID), sortOrder, naturalSort);
-				case "Entity.DisplayName":
-					return OrderByElementFactory.Create(DomInstanceExposers.FieldValues.DomInstanceField(SlcObject_LinkingIds.Sections.Entity.DisplayName), sortOrder, naturalSort);
-				case "Entity.ModelName":
-					return OrderByElementFactory.Create(DomInstanceExposers.FieldValues.DomInstanceField(SlcObject_LinkingIds.Sections.Entity.ModelName), sortOrder, naturalSort);
-				case "Entity.SolutionName":
-					return OrderByElementFactory.Create(DomInstanceExposers.FieldValues.DomInstanceField(SlcObject_LinkingIds.Sections.Entity.SolutionName), sortOrder, naturalSort);
-				case "Entity.ParentID":
-					return OrderByElementFactory.Create(DomInstanceExposers.FieldValues.DomInstanceField(SlcObject_LinkingIds.Sections.Entity.ParentID), sortOrder, naturalSort);
-				case "Entity.ParentModelName":
-					return OrderByElementFactory.Create(DomInstanceExposers.FieldValues.DomInstanceField(SlcObject_LinkingIds.Sections.Entity.ParentModelName), sortOrder, naturalSort);
+				case "EntityDescriptor.ID":
+					return OrderByElementFactory.Create(DomInstanceExposers.FieldValues.DomInstanceField(SlcObject_LinkingIds.Sections.EntityDescriptor.ID), sortOrder, naturalSort);
+				case "EntityDescriptor.DisplayName":
+					return OrderByElementFactory.Create(DomInstanceExposers.FieldValues.DomInstanceField(SlcObject_LinkingIds.Sections.EntityDescriptor.DisplayName), sortOrder, naturalSort);
+				case "EntityDescriptor.ModelName":
+					return OrderByElementFactory.Create(DomInstanceExposers.FieldValues.DomInstanceField(SlcObject_LinkingIds.Sections.EntityDescriptor.ModelName), sortOrder, naturalSort);
+				case "EntityDescriptor.SolutionName":
+					return OrderByElementFactory.Create(DomInstanceExposers.FieldValues.DomInstanceField(SlcObject_LinkingIds.Sections.EntityDescriptor.SolutionName), sortOrder, naturalSort);
+				case "EntityDescriptor.ParentID":
+					return OrderByElementFactory.Create(DomInstanceExposers.FieldValues.DomInstanceField(SlcObject_LinkingIds.Sections.EntityDescriptor.ParentID), sortOrder, naturalSort);
+				case "EntityDescriptor.ParentModelName":
+					return OrderByElementFactory.Create(DomInstanceExposers.FieldValues.DomInstanceField(SlcObject_LinkingIds.Sections.EntityDescriptor.ParentModelName), sortOrder, naturalSort);
 				case nameof(Link.Guid):
 					return OrderByElementFactory.Create(DomInstanceExposers.Id, sortOrder, naturalSort);
 				case nameof(Link.LastModified):

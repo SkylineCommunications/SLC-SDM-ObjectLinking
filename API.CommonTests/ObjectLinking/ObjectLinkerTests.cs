@@ -32,7 +32,7 @@
 		{
 			var linker = new ObjectLinker(_connection);
 
-			var entity1 = new Entity
+			var entity1 = new EntityDescriptor
 			{
 				ID = "entity1",
 				DisplayName = "Entity 1",
@@ -41,7 +41,7 @@
 				ParentID = "parent1",
 				ParentModelName = "Parent Model A",
 			};
-			var entity2 = new Entity
+			var entity2 = new EntityDescriptor
 			{
 				ID = "entity2",
 				DisplayName = "Entity 2",
@@ -53,7 +53,7 @@
 
 			var link = new Link
 			{
-				Entities =
+				EntityDescriptors =
 				{
 					entity1,
 				},
@@ -63,11 +63,11 @@
 
 			act.Should().Throw<ValidationException>();
 
-			link.Entities.Add(entity2);
+			link.EntityDescriptors.Add(entity2);
 
 			act.Should().NotThrow();
 
-			linker.Links.Read(new TRUEFilterElement<Link>()).Should().ContainSingle(l => l.Entities.Contains(entity1));
+			linker.Links.Read(new TRUEFilterElement<Link>()).Should().ContainSingle(l => l.EntityDescriptors.Contains(entity1));
 		}
 
 		[TestMethod]
@@ -75,7 +75,7 @@
 		{
 			var linker = new ObjectLinker(_connection);
 
-			var entity1 = new Entity
+			var entity1 = new EntityDescriptor
 			{
 				ID = "entity1",
 				DisplayName = "Entity 1",
@@ -84,7 +84,7 @@
 				ParentID = "parent1",
 				ParentModelName = "Parent Model A",
 			};
-			var entity2 = new Entity
+			var entity2 = new EntityDescriptor
 			{
 				ID = "entity2",
 				DisplayName = "Entity 2",
@@ -93,7 +93,7 @@
 				ParentID = "parent2",
 				ParentModelName = "Parent Model B",
 			};
-			var entity3 = new Entity
+			var entity3 = new EntityDescriptor
 			{
 				ID = "entity3",
 				DisplayName = "Entity 3",
@@ -108,7 +108,7 @@
 			linker.Create(entity3, entity1);
 
 			long result = -1;
-			var act = () => result = linker.Links.Count(LinkExposers.Entities.SolutionName.Equal("Solution Z"));
+			var act = () => result = linker.Links.Count(LinkExposers.EntityDescriptors.SolutionName.Equal("Solution Z"));
 
 			act.Should().NotThrow();
 			result.Should().Be(2);

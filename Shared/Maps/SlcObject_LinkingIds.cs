@@ -15,9 +15,13 @@ namespace DomHelpers.SlcObject_Linking
 	public static class SlcObject_LinkingIds
 	{
 		public const string ModuleId = "(slc)object_linking";
+		public static class Enums
+		{
+		}
+
 		public static class Sections
 		{
-			public static class Entity
+			public static class EntityDescriptor
 			{
 				public static SectionDefinitionID Id { get; } = new SectionDefinitionID(new Guid("75dd33f0-204e-4b51-bec3-3ae57065ebc0"))
 				{ ModuleId = "(slc)object_linking" };

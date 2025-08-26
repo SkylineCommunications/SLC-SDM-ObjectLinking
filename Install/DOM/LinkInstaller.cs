@@ -11,47 +11,47 @@
 		private void InstallLinks(DomHelper helper)
 		{
 			var entitySection = new SectionDefinitionBuilder()
-				.WithName("Entity")
-				.WithID(SlcObject_LinkingIds.Sections.Entity.Id)
+				.WithName("Entity Descriptor")
+				.WithID(SlcObject_LinkingIds.Sections.EntityDescriptor.Id)
 				.AddFieldDescriptor(new FieldDescriptorBuilder()
-					.WithID(SlcObject_LinkingIds.Sections.Entity.ID)
+					.WithID(SlcObject_LinkingIds.Sections.EntityDescriptor.ID)
 					.WithName("ID")
 					.WithType(typeof(string))
 					.WithIsOptional(true)
 					.WithTooltip("The unique identifier of the entity."))
 				.AddFieldDescriptor(new FieldDescriptorBuilder()
-					.WithID(SlcObject_LinkingIds.Sections.Entity.DisplayName)
+					.WithID(SlcObject_LinkingIds.Sections.EntityDescriptor.DisplayName)
 					.WithName("Display Name")
 					.WithType(typeof(string))
 					.WithIsOptional(true)
 					.WithTooltip("The display name of the entity."))
 				.AddFieldDescriptor(new FieldDescriptorBuilder()
-					.WithID(SlcObject_LinkingIds.Sections.Entity.ModelName)
+					.WithID(SlcObject_LinkingIds.Sections.EntityDescriptor.ModelName)
 					.WithName("Model Name")
 					.WithType(typeof(string))
 					.WithIsOptional(true)
-					.WithTooltip("The name of the model the enitity is associated with."))
+					.WithTooltip("The name of the model the entity is associated with."))
 				.AddFieldDescriptor(new FieldDescriptorBuilder()
-					.WithID(SlcObject_LinkingIds.Sections.Entity.SolutionName)
+					.WithID(SlcObject_LinkingIds.Sections.EntityDescriptor.SolutionName)
 					.WithName("Solution Name")
 					.WithType(typeof(string))
 					.WithIsOptional(true)
 					.WithTooltip("The name of the solution the entity is associated with."))
 				.AddFieldDescriptor(new FieldDescriptorBuilder()
-					.WithID(SlcObject_LinkingIds.Sections.Entity.ParentID)
+					.WithID(SlcObject_LinkingIds.Sections.EntityDescriptor.ParentID)
 					.WithName("Parent ID")
 					.WithType(typeof(string))
 					.WithIsOptional(true)
-					.WithTooltip("The unique identifier of the parent enitity."))
+					.WithTooltip("The unique identifier of the parent entity."))
 				.AddFieldDescriptor(new FieldDescriptorBuilder()
-					.WithID(SlcObject_LinkingIds.Sections.Entity.ParentModelName)
+					.WithID(SlcObject_LinkingIds.Sections.EntityDescriptor.ParentModelName)
 					.WithName("Parent Model Name")
 					.WithType(typeof(string))
 					.WithIsOptional(true)
 					.WithTooltip("The model name of the parent entity"))
 				.Build();
 
-			Import(helper.SectionDefinitions, SectionDefinitionExposers.ID.Equal(SlcObject_LinkingIds.Sections.Entity.Id), entitySection);
+			Import(helper.SectionDefinitions, SectionDefinitionExposers.ID.Equal(SlcObject_LinkingIds.Sections.EntityDescriptor.Id), entitySection);
 			Log("Installed section definition for Entity");
 
 			var linkDefinition = new DomDefinitionBuilder()
@@ -59,7 +59,7 @@
 				.WithName("Link")
 				.AddSectionDefinitionLink(new Skyline.DataMiner.Net.Apps.Sections.SectionDefinitions.SectionDefinitionLink
 				{
-					SectionDefinitionID = SlcObject_LinkingIds.Sections.Entity.Id,
+					SectionDefinitionID = SlcObject_LinkingIds.Sections.EntityDescriptor.Id,
 					AllowMultipleSections = true,
 					IsOptional = true,
 				})

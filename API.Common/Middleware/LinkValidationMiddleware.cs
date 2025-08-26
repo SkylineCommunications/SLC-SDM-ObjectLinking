@@ -212,7 +212,7 @@ namespace Skyline.DataMiner.SDM.ObjectLinking.Middleware
 			}
 
 			// Validate that the Link has at least two entities.
-			if (link.Entities.Count < 2)
+			if (link.EntityDescriptors.Count < 2)
 			{
 				entry.Exceptions.Add(new ArgumentException($"A Link (Guid: {link.Guid}) must contain at least two entities.", nameof(link)));
 			}
@@ -225,9 +225,9 @@ namespace Skyline.DataMiner.SDM.ObjectLinking.Middleware
 
 			// Check the entities in the link.
 			var entitySet = new HashSet<string>();
-			for (int i = 0; i < link.Entities.Count; i++)
+			for (int i = 0; i < link.EntityDescriptors.Count; i++)
 			{
-				var entity = link.Entities[i];
+				var entity = link.EntityDescriptors[i];
 				if (entity is null)
 				{
 					entry.Exceptions.Add(new ArgumentException($"Entity at index {i} is null in Link (Guid: {link.Guid}).", nameof(link)));

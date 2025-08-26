@@ -24,23 +24,23 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 			}
 
 			// Compare Entities property by sorting on ID to ensure order does not matter
-			if (Entities is null && other.Entities is null)
+			if (EntityDescriptors is null && other.EntityDescriptors is null)
 			{
 				return true;
 			}
 
-			if (Entities is null || other.Entities is null)
+			if (EntityDescriptors is null || other.EntityDescriptors is null)
 			{
 				return false;
 			}
 
-			if (Entities.Count != other.Entities.Count)
+			if (EntityDescriptors.Count != other.EntityDescriptors.Count)
 			{
 				return false;
 			}
 
-			var thisEntitiesSorted = Entities.OrderBy(e => e.ID).ToList();
-			var otherEntitiesSorted = other.Entities.OrderBy(e => e.ID).ToList();
+			var thisEntitiesSorted = EntityDescriptors.OrderBy(e => e.ID).ToList();
+			var otherEntitiesSorted = other.EntityDescriptors.OrderBy(e => e.ID).ToList();
 
 			for (int i = 0; i < thisEntitiesSorted.Count; i++)
 			{

@@ -45,7 +45,7 @@ namespace Skyline.DataMiner.SDM.ObjectLinking.Install.DOM
 				.WithInformationEvents(false)
 				.WithHistory(false)
 				.Build();
-			moduleHelper.ModuleSettings.Create(module);
+			Import(moduleHelper.ModuleSettings, ModuleSettingsExposers.ModuleId.Equal(SlcObject_LinkingIds.ModuleId), module);
 
 			if (!moduleExist)
 			{
