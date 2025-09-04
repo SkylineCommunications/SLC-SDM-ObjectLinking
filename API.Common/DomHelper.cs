@@ -55,7 +55,7 @@ namespace DomHelpers
 		/// <summary>
 		/// Gets the Module ID of the DOM Instance.
 		/// </summary>
-		public String ModuleId
+		protected String ModuleId
 		{
 			get
 			{
@@ -66,7 +66,7 @@ namespace DomHelpers
 		/// <summary>
 		/// Gets the ID of the DOM Instance.
 		/// </summary>
-		public DomInstanceId ID
+		protected DomInstanceId ID
 		{
 			get
 			{
@@ -77,7 +77,7 @@ namespace DomHelpers
 		/// <summary>
 		/// Gets the name of the DOM Instance.
 		/// </summary>
-		public String Name
+		protected String Name
 		{
 			get
 			{
@@ -88,7 +88,7 @@ namespace DomHelpers
 		/// <summary>
 		/// Gets the Status ID of the DOM Instance.
 		/// </summary>
-		public String StatusId
+		protected String StatusId
 		{
 			get
 			{
@@ -99,7 +99,7 @@ namespace DomHelpers
 		/// <summary>
 		/// Gets the underlying DOM Instance.
 		/// </summary>
-		public DomDefinitionId DomDefinitionId
+		protected DomDefinitionId DomDefinitionId
 		{
 			get
 			{
