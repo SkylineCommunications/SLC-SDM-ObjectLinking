@@ -34,7 +34,7 @@ id: 87652a57-bccf-4146-807e-e0c9b84bc66a
 #   Max length: 100 characters.
 #   Cannot contain newlines.
 #   Cannot contain leading or trailing whitespace characters.
-title: Object Linking
+title: SDM Object Linking
 
 # [Optional]
 # General information about the Catalog item.
@@ -51,7 +51,7 @@ source_code_url: https://github.com/SkylineCommunications/SLC-SDM-ObjectLinking
 # A valid URL that points to documentation.
 #   A valid URL
 #   Max length: 2048 characters
-documentation_url: https://github.com/SkylineCommunications/SLC-SDM-ObjectLinking
+documentation_url: https://github.com/SkylineCommunications/SLC-SDM-ObjectLinking/tree/main/docs
 
 # [Optional]
 # People who are responsible for this Catalog item. Might be developers, but this is not required.
@@ -60,6 +60,7 @@ documentation_url: https://github.com/SkylineCommunications/SLC-SDM-ObjectLinkin
 #   The email and URL are optional, and should be in valid email/URL formats.
 owners:
   - name: 'Arne Maes'
+  - name: 'Tim Vandenbruwaene'
   
 # [Optional]
 # Tags that allow you to categorize your Catalog items.
@@ -69,3 +70,4 @@ owners:
 #   Cannot contain leading or trailing whitespace characters.
 tags:
   - dataminer
+  - Standard Data Model
