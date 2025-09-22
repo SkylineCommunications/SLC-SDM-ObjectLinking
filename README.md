@@ -32,7 +32,7 @@ var linker = connection.GetObjectLinker();
 
 ```csharp
 // Creating a link between 2 entities.
-var entity1 = new Entity
+var entity1 = new EntityDescriptor
 {
 	ID = "entity1",
 	DisplayName = "Entity 1",
@@ -41,7 +41,7 @@ var entity1 = new Entity
 	ParentID = "parent1",
 	ParentModelName = "Parent Model A",
 };
-var entity2 = new Entity
+var entity2 = new EntityDescriptor
 {
 	ID = "entity2",
 	DisplayName = "Entity 2",
@@ -62,7 +62,7 @@ var entityId = "entity1";
 var linkedEntities = linker.GetLinkedEntities(entityId);
 
 // Custom filters
-var filter = LinkExposers.Entities.SolutionName.Equal("Solution X");
+var filter = LinkExposers.EntityDescriptors.SolutionName.Equal("Solution X");
 var linkedEntitiesWithFilter = linker.Links.Read(filter);
 ```
 
