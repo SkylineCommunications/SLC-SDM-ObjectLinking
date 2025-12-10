@@ -10,6 +10,9 @@ It comes with:
 
 The entry point for the library is the **ObjectLinker**. You can use it to create and query links between objects.
 
+> [!IMPORTANT]
+> You must install the [SDM Registration](https://catalog.dataminer.services/details/52173e49-9185-4772-9b60-c186ee365a81) before in order for SDM Object Linking to work.
+
 ### Getting the linker
 
 ```csharp
