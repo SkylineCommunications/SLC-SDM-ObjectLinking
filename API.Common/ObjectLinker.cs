@@ -8,7 +8,9 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 
 	using Skyline.DataMiner.Net;
 	using Skyline.DataMiner.Net.Messages.SLDataGateway;
+#if NETSTANDARD2_0_OR_GREATER
 	using Skyline.DataMiner.SDM.Middleware;
+#endif
 	using Skyline.DataMiner.SDM.ObjectLinking.Middleware;
 
 	/// <summary>
@@ -24,7 +26,9 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 		{
 			Links = Sdm.CreateProviderBuilder(new LinkDomStorageProvider(connection))
 				.AddMiddleware(new LinkValidationMiddleware())
+#if NETSTANDARD2_0_OR_GREATER
 				.AddMiddleware(new SdmTracingMiddleware<Link>())
+#endif
 				.Build();
 		}
 
