@@ -22,11 +22,13 @@
 		<RepositoryType>git</RepositoryType>
 		<RepositoryUrl>https://github.com/SkylineCommunications/SLC-SDM-ObjectLinking</RepositoryUrl>
 	</PropertyGroup>
+
 	<ItemGroup>
 		<None Include="README.md" Pack="true" PackagePath="" />
 		<None Include="LICENSE.txt" Pack="true" PackagePath="" />
 		<None Include="nuget\Icon.png" Pack="true" PackagePath="" />
 	</ItemGroup>
+
 	<ItemGroup>
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="Skyline.DataMiner.SDM.Abstractions" Version="0.0.0-alpha25" />
@@ -36,13 +38,16 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 	</ItemGroup>
+
 	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
 		<PackageReference Include="Skyline.DataMiner.Files.Skyline.DataMiner.Storage.Types" Version="10.5.2" />
 		<PackageReference Include="Skyline.DataMiner.Files.SLNetTypes" Version="10.5.2" />
 	</ItemGroup>
+
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
 		<PackageReference Include="Skyline.DataMiner.Internal.SLNetTypes" Version="10.5.2521-1292" />
 	</ItemGroup>
+
 	<ItemGroup>
 		<InternalsVisibleTo Include="ObjectLinking.CommonTests" />
 		<InternalsVisibleTo Include="ObjectLinking.Automation" />
@@ -50,7 +55,9 @@
 		<InternalsVisibleTo Include="ObjectLinking.Install" />
 		<InternalsVisibleTo Include="ObjectLinking.Protocol" />
 	</ItemGroup>
+
 	<Import Project="..\Shared\Shared.projitems" Label="Shared" />
+
 	<!-- Can be used to set the location of your local nuget store to copy to -->
 	<Import Project="../Directory.Build.props.user" Condition="Exists('../Directory.Build.props.user')" />
 	<Target Name="CopyNuGetPackage" AfterTargets="Pack" Condition="'$(NuGetStorePath)' != '' and '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
