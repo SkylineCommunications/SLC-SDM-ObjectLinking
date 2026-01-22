@@ -88,7 +88,7 @@ public class Script
 				Guid = new Guid("a5e01a18-7704-40fc-b2d4-b4b02b096ba9"),
 				ID = "standard_data_model_object_linking",
 				DisplayName = "SDM Object Linking",
-				Version = "1.0.1",
+				Version = "1.0.3",
 				DefaultApiScriptName = "",
 				DefaultApiEndpoint = "",
 				VisualizationEndpoint = "",
