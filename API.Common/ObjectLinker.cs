@@ -21,17 +21,14 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 		/// <param name="connection">The connection to use for link storage operations.</param>
 		public ObjectLinker(IConnection connection)
 		{
-			Links = Sdm.CreateBuilder()
-				.For<Link>()
-				.Use<IObservableBulkRepository<Link>>(new LinkDomStorageProvider(connection))
-				.AddMiddleware(new LinkValidationMiddleware())
-				.Build();
+			Links = new LinkDomStorageProvider(connection)
+				.WithMiddleware(new LinkValidationMiddleware());
 		}
 
 		/// <summary>
 		/// Gets the storage provider for <see cref="Link"/> objects.
 		/// </summary>
-		public IObservableBulkRepository<Link> Links { get; }
+		public IBulkRepository<Link> Links { get; }
 
 		/// <summary>
 		/// Creates a new link between two entities.

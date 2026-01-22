@@ -7,7 +7,7 @@
 		<Nullable>disable</Nullable>
 		<AssemblyName>Skyline.DataMiner.SDM.ObjectLinking.Common</AssemblyName>
 		<RootNamespace>Skyline.DataMiner.SDM.ObjectLinking</RootNamespace>
-		<Version>0.0.0-B004</Version>
+		<Version>0.1.0-B004</Version>
 		<PackageTags>Skyline;DataMiner</PackageTags>
 		<PackageProjectUrl>https://skyline.be</PackageProjectUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
@@ -31,8 +31,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="Skyline.DataMiner.SDM.Abstractions" Version="0.2.2" />
-		<PackageReference Include="Skyline.DataMiner.SDM.SourceGenerator" Version="0.2.2" OutputItemType="Analyzer" ReferenceoutputAssembly="false" />
+		<PackageReference Include="Skyline.DataMiner.SDM.Abstractions" Version="0.3.1" />
+		<PackageReference Include="Skyline.DataMiner.SDM.SourceGenerator" Version="0.3.1" OutputItemType="Analyzer" ReferenceoutputAssembly="false" />
 		<PackageReference Include="Skyline.DataMiner.Utils.SecureCoding.Analyzers" Version="2.2.1">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

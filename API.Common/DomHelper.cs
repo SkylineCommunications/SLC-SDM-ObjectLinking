@@ -928,7 +928,6 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 		public static readonly Exposer<Link, string> CreatedBy = new Exposer<Link, string>((obj) => obj.CreatedBy, nameof(Link.CreatedBy));
 		public static readonly Exposer<Link, DateTime> LastModified = new Exposer<Link, DateTime>((obj) => obj.LastModified.GetValueOrDefault(), nameof(Link.LastModified));
 		public static readonly Exposer<Link, string> LastModifiedBy = new Exposer<Link, string>((obj) => obj.LastModifiedBy, nameof(Link.LastModifiedBy));
-		
 		public static class EntityDescriptors
 		{
 			public static readonly DynamicListExposer<Link, string> ID = DynamicListExposer<Link, string>.CreateFromListExposer(new Exposer<Link, IEnumerable>((obj) => obj.EntityDescriptors.Select(x => x.ID).Where(x => x != null), String.Join(".", nameof(EntityDescriptor), nameof(ID))));
@@ -969,89 +968,18 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 	using SLDataGateway.API.Querying;
 	using SLDataGateway.API.Types.Querying;
 
-	public partial class LinkDomStorageProvider : IObservableBulkRepository<Link>
+	public partial class LinkDomStorageProvider : IBulkRepository<Link>
 	{
 		private readonly IConnection connection;
 		private readonly DomHelper helper;
-		private readonly object _lock = new object();
-		private int _subscriberCount = 0;
-		private string _subscriptionSetId;
-		private SubscriptionFilter[] _subscriptionFilters;
+
 		public LinkDomStorageProvider(IConnection connection)
 		{
 			this.connection = connection;
 			this.helper = new DomHelper(connection.HandleMessages, DomHelpers.SlcObject_Linking.SlcObject_LinkingIds.ModuleId);
-			this._subscriptionSetId = $"DomInstanceSubscription_{nameof(LinkDomStorageProvider)}_{Guid.NewGuid()}";
-			this._subscriptionFilters = new SubscriptionFilter[] { new ModuleEventSubscriptionFilter<DomInstancesChangedEventMessage>(DomHelpers.SlcObject_Linking.SlcObject_LinkingIds.ModuleId), new SubscriptionFilter<DomInstancesChangedEventMessage, DomInstance>(DomInstanceExposers.DomDefinitionId.Equal(SlcObject_LinkingIds.Definitions.Link.Id)) };
 		}
 
-		public event EventHandler<ObjectEventArgs<Link>> OnCreated
-		{
-			add
-			{
-				lock (_lock)
-				{
-					CheckAndSubscribe();
-					this.Created += value;
-				}
-			}
-
-			remove
-			{
-				lock (_lock)
-				{
-					this.Created -= value;
-					CheckAndUnsubscribe();
-				}
-			}
-		}
-
-		private event EventHandler<ObjectEventArgs<Link>> Created;
-		public event EventHandler<ObjectEventArgs<Link>> OnUpdated
-		{
-			add
-			{
-				lock (_lock)
-				{
-					CheckAndSubscribe();
-					this.Updated += value;
-				}
-			}
-
-			remove
-			{
-				lock (_lock)
-				{
-					this.Updated -= value;
-					CheckAndUnsubscribe();
-				}
-			}
-		}
-
-		private event EventHandler<ObjectEventArgs<Link>> Updated;
-		public event EventHandler<ObjectEventArgs<Link>> OnDeleted
-		{
-			add
-			{
-				lock (_lock)
-				{
-					CheckAndSubscribe();
-					this.Deleted += value;
-				}
-			}
-
-			remove
-			{
-				lock (_lock)
-				{
-					this.Deleted -= value;
-					CheckAndUnsubscribe();
-				}
-			}
-		}
-
-		private event EventHandler<ObjectEventArgs<Link>> Deleted;
-		public void Create(Link createObject)
+		public Link Create(Link createObject)
 		{
 			if (createObject is null)
 			{
@@ -1059,7 +987,8 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 			}
 
 			var instance = ToInstance(createObject);
-			helper.DomInstances.Create(instance);
+			var result = helper.DomInstances.Create(instance);
+			return FromInstance(result);
 		}
 
 		public IEnumerable<Link> Read(FilterElement<Link> filter)
@@ -1086,7 +1015,7 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 			return Read(domQuery);
 		}
 
-		public void Update(Link updateObject)
+		public Link Update(Link updateObject)
 		{
 			if (updateObject is null)
 			{
@@ -1094,7 +1023,8 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 			}
 
 			var instance = ToInstance(updateObject);
-			helper.DomInstances.Update(instance);
+			var result = helper.DomInstances.Update(instance);
+			return FromInstance(result);
 		}
 
 		public void Delete(Link deleteObject)
@@ -1108,19 +1038,22 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 			helper.DomInstances.Delete(instance);
 		}
 
-		public void Create(IEnumerable<Link> createObjects)
+		public IReadOnlyCollection<Link> Create(IEnumerable<Link> createObjects)
 		{
 			if (createObjects is null || !createObjects.Any())
 			{
-				return;
+				return Array.Empty<Link>();
 			}
 
+			// Check if some of the objects already exist
 			var existing = new HashSet<string>();
 			foreach (var batch in createObjects.Batch(500))
 			{
 				existing.UnionWith(Read(new ORFilterElement<Link>(batch.Select(obj => LinkExposers.Identifier.Equal(obj.Identifier)).ToArray())).Select(obj => obj.Identifier));
 			}
 
+			// Create the remainder
+			var SuccessfulItems = new List<Link>();
 			var failures = new Dictionary<string, Exception>();
 			var objects = createObjects.Where(obj => !existing.Contains(obj.Identifier)).ToDictionary(obj => obj.Identifier);
 			foreach (var batch in createObjects.Select(ToInstance).Batch(helper.DomInstances.MaxAmountBulkOperation))
@@ -1130,8 +1063,20 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 				{
 					failures.Add(failure.Id.ToString(), new CrudFailedException(result.TraceDataPerItem[failure]));
 				}
+
+				foreach (var success in result.SuccessfulItems)
+				{
+					SuccessfulItems.Add(FromInstance(success));
+				}
 			}
 
+			// If everything went fine, return the successful creations
+			if (!existing.Any() && !failures.Any())
+			{
+				return SuccessfulItems;
+			}
+
+			// Otherwise, build and throw an exception
 			var exceptionBuilder = new SdmBulkCrudException<Link>.Builder();
 			foreach (var obj in createObjects)
 			{
@@ -1150,19 +1095,17 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 				exceptionBuilder.AddSuccessful(obj);
 			}
 
-			if (exceptionBuilder.HasFailure)
-			{
-				throw exceptionBuilder.Build();
-			}
+			throw exceptionBuilder.Build();
 		}
 
-		public void CreateOrUpdate(IEnumerable<Link> items)
+		public IReadOnlyCollection<Link> CreateOrUpdate(IEnumerable<Link> items)
 		{
 			if (items is null || !items.Any())
 			{
-				return;
+				return Array.Empty<Link>();
 			}
 
+			var successful = new List<Link>();
 			var exceptionBuilder = new SdmBulkCrudException<Link>.Builder();
 			var objects = items.ToDictionary(obj => obj.Identifier);
 			foreach (var batch in items.Select(ToInstance).Batch(helper.DomInstances.MaxAmountBulkOperation))
@@ -1173,9 +1116,11 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 					exceptionBuilder.AddFailed(objects[failure.Id.ToString()], new CrudFailedException(result.TraceDataPerItem[failure]));
 				}
 
-				foreach (var success in result.SuccessfulIds)
+				foreach (var success in result.SuccessfulItems)
 				{
-					exceptionBuilder.AddSuccessful(objects[success.Id.ToString()]);
+					var item = FromInstance(success);
+					exceptionBuilder.AddSuccessful(item);
+					successful.Add(item);
 				}
 			}
 
@@ -1183,21 +1128,26 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 			{
 				throw exceptionBuilder.Build();
 			}
+
+			return successful;
 		}
 
-		public void Update(IEnumerable<Link> updateObjects)
+		public IReadOnlyCollection<Link> Update(IEnumerable<Link> updateObjects)
 		{
 			if (updateObjects is null || !updateObjects.Any())
 			{
-				return;
+				return Array.Empty<Link>();
 			}
 
+			// Check if which objects already exist
 			var existing = new HashSet<string>();
 			foreach (var batch in updateObjects.Batch(500))
 			{
 				existing.UnionWith(Read(new ORFilterElement<Link>(batch.Select(obj => LinkExposers.Identifier.Equal(obj.Identifier)).ToArray())).Select(obj => obj.Identifier));
 			}
 
+			// Update the existing objects
+			var successfulItems = new List<Link>();
 			var failures = new Dictionary<string, Exception>();
 			var objects = updateObjects.Where(obj => existing.Contains(obj.Identifier)).ToDictionary(obj => obj.Identifier);
 			foreach (var batch in updateObjects.Select(ToInstance).Batch(helper.DomInstances.MaxAmountBulkOperation))
@@ -1207,8 +1157,14 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 				{
 					failures.Add(failure.Id.ToString(), new CrudFailedException(result.TraceDataPerItem[failure]));
 				}
+
+				foreach (var success in result.SuccessfulItems)
+				{
+					successfulItems.Add(FromInstance(success));
+				}
 			}
 
+			// Check for failures and build exception if needed
 			var exceptionBuilder = new SdmBulkCrudException<Link>.Builder();
 			foreach (var obj in updateObjects)
 			{
@@ -1231,6 +1187,8 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 			{
 				throw exceptionBuilder.Build();
 			}
+
+			return successfulItems;
 		}
 
 		public void Delete(IEnumerable<Link> deleteObjects)
@@ -1352,67 +1310,6 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 			return helper.DomInstances.Count(domQuery);
 		}
 
-		public void Dispose()
-		{
-			connection.RemoveSubscription(_subscriptionSetId, _subscriptionFilters);
-			connection.OnNewMessage -= Connection_OnNewMessageMethod;
-		}
-
-		private void CheckAndSubscribe()
-		{
-			if (_subscriberCount <= 0)
-			{
-				this.connection.OnNewMessage += Connection_OnNewMessageMethod;
-				this.connection.AddSubscription(_subscriptionSetId, _subscriptionFilters);
-				this.connection.Subscribe();
-			}
-
-			_subscriberCount++;
-		}
-
-		private void CheckAndUnsubscribe()
-		{
-			_subscriberCount--;
-			if (_subscriberCount <= 0)
-			{
-				this.connection.OnNewMessage -= Connection_OnNewMessageMethod;
-				this.connection.RemoveSubscription(_subscriptionSetId, _subscriptionFilters);
-			}
-		}
-
-		private void Connection_OnNewMessageMethod(object sender, NewMessageEventArgs e)
-		{
-			if (!e.FromSet(this._subscriptionSetId))
-			{
-				return;
-			}
-
-			if (!(e.Message is DomInstancesChangedEventMessage domInstancesChangedEventMessage))
-			{
-				return;
-			}
-
-			bool isCorrectType(DomInstance domInstance)
-			{
-				return domInstance.DomDefinitionId.Equals(SlcObject_LinkingIds.Definitions.Link);
-			}
-
-			foreach (var domInstance in domInstancesChangedEventMessage.Created.Where(isCorrectType))
-			{
-				Created?.Invoke(this, new ObjectEventArgs<Link>(FromInstance(domInstance)));
-			}
-
-			foreach (var domInstance in domInstancesChangedEventMessage.Updated.Where(isCorrectType))
-			{
-				Updated?.Invoke(this, new ObjectEventArgs<Link>(FromInstance(domInstance)));
-			}
-
-			foreach (var domInstance in domInstancesChangedEventMessage.Deleted.Where(isCorrectType))
-			{
-				Deleted?.Invoke(this, new ObjectEventArgs<Link>(FromInstance(domInstance)));
-			}
-		}
-
 		private IEnumerable<Link> Read(FilterElement<DomInstance> domFilter)
 		{
 			if (domFilter is null)
@@ -1484,27 +1381,27 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 			switch (fieldName)
 			{
 				case nameof(Link.Identifier):
-					return FilterElementFactory.Create(DomInstanceExposers.Id, comparer, Guid.Parse(Convert.ToString(value)));
+					return FilterElementFactory.Create<DomInstance>(DomInstanceExposers.Id, comparer, Guid.Parse(Convert.ToString(value)));
 				case nameof(Link.LastModified):
-					return FilterElementFactory.Create(DomInstanceExposers.LastModified, comparer, (DateTime)value);
+					return FilterElementFactory.Create<DomInstance>(DomInstanceExposers.LastModified, comparer, (DateTime)value);
 				case nameof(Link.LastModifiedBy):
-					return FilterElementFactory.Create(DomInstanceExposers.LastModifiedBy, comparer, (string)value);
+					return FilterElementFactory.Create<DomInstance>(DomInstanceExposers.LastModifiedBy, comparer, (string)value);
 				case nameof(Link.CreatedAt):
-					return FilterElementFactory.Create(DomInstanceExposers.CreatedAt, comparer, (DateTime)value);
+					return FilterElementFactory.Create<DomInstance>(DomInstanceExposers.CreatedAt, comparer, (DateTime)value);
 				case nameof(Link.CreatedBy):
-					return FilterElementFactory.Create(DomInstanceExposers.CreatedBy, comparer, (string)value);
+					return FilterElementFactory.Create<DomInstance>(DomInstanceExposers.CreatedBy, comparer, (string)value);
 				case "EntityDescriptor.ID":
-					return FilterElementFactory.Create(DomInstanceExposers.FieldValues.DomInstanceField(SlcObject_LinkingIds.Sections.EntityDescriptor.ID), comparer, (string)value);
+					return FilterElementFactory.Create<DomInstance>(DomInstanceExposers.FieldValues.DomInstanceField(SlcObject_LinkingIds.Sections.EntityDescriptor.ID), comparer, (string)value);
 				case "EntityDescriptor.DisplayName":
-					return FilterElementFactory.Create(DomInstanceExposers.FieldValues.DomInstanceField(SlcObject_LinkingIds.Sections.EntityDescriptor.DisplayName), comparer, (string)value);
+					return FilterElementFactory.Create<DomInstance>(DomInstanceExposers.FieldValues.DomInstanceField(SlcObject_LinkingIds.Sections.EntityDescriptor.DisplayName), comparer, (string)value);
 				case "EntityDescriptor.ModelName":
-					return FilterElementFactory.Create(DomInstanceExposers.FieldValues.DomInstanceField(SlcObject_LinkingIds.Sections.EntityDescriptor.ModelName), comparer, (string)value);
+					return FilterElementFactory.Create<DomInstance>(DomInstanceExposers.FieldValues.DomInstanceField(SlcObject_LinkingIds.Sections.EntityDescriptor.ModelName), comparer, (string)value);
 				case "EntityDescriptor.SolutionName":
-					return FilterElementFactory.Create(DomInstanceExposers.FieldValues.DomInstanceField(SlcObject_LinkingIds.Sections.EntityDescriptor.SolutionName), comparer, (string)value);
+					return FilterElementFactory.Create<DomInstance>(DomInstanceExposers.FieldValues.DomInstanceField(SlcObject_LinkingIds.Sections.EntityDescriptor.SolutionName), comparer, (string)value);
 				case "EntityDescriptor.ParentID":
-					return FilterElementFactory.Create(DomInstanceExposers.FieldValues.DomInstanceField(SlcObject_LinkingIds.Sections.EntityDescriptor.ParentID), comparer, (string)value);
+					return FilterElementFactory.Create<DomInstance>(DomInstanceExposers.FieldValues.DomInstanceField(SlcObject_LinkingIds.Sections.EntityDescriptor.ParentID), comparer, (string)value);
 				case "EntityDescriptor.ParentModelName":
-					return FilterElementFactory.Create(DomInstanceExposers.FieldValues.DomInstanceField(SlcObject_LinkingIds.Sections.EntityDescriptor.ParentModelName), comparer, (string)value);
+					return FilterElementFactory.Create<DomInstance>(DomInstanceExposers.FieldValues.DomInstanceField(SlcObject_LinkingIds.Sections.EntityDescriptor.ParentModelName), comparer, (string)value);
 				default:
 					throw new NotImplementedException();
 			}

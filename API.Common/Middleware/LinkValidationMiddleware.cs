@@ -33,7 +33,7 @@ namespace Skyline.DataMiner.SDM.ObjectLinking.Middleware
 			return next(query);
 		}
 
-		public void OnCreate(IEnumerable<Link> oToCreate, Action<IEnumerable<Link>> next)
+		public IReadOnlyCollection<Link> OnCreate(IEnumerable<Link> oToCreate, Func<IEnumerable<Link>, IReadOnlyCollection<Link>> next)
 		{
 			var builder = new ValidationResult.Builder();
 			foreach (var link in oToCreate)
@@ -48,10 +48,10 @@ namespace Skyline.DataMiner.SDM.ObjectLinking.Middleware
 				throw result.ToException();
 			}
 
-			next(oToCreate);
+			return next(oToCreate);
 		}
 
-		public void OnCreate(Link oToCreate, Action<Link> next)
+		public Link OnCreate(Link oToCreate, Func<Link, Link> next)
 		{
 			var result = Validate(oToCreate);
 			if (!result.IsValid)
@@ -59,10 +59,10 @@ namespace Skyline.DataMiner.SDM.ObjectLinking.Middleware
 				throw result.ToException();
 			}
 
-			next(oToCreate);
+			return next(oToCreate);
 		}
 
-		public void OnCreateOrUpdate(IEnumerable<Link> oToCreateOrUpdate, Action<IEnumerable<Link>> next)
+		public IReadOnlyCollection<Link> OnCreateOrUpdate(IEnumerable<Link> oToCreateOrUpdate, Func<IEnumerable<Link>, IReadOnlyCollection<Link>> next)
 		{
 			var builder = new ValidationResult.Builder();
 			foreach (var link in oToCreateOrUpdate)
@@ -77,12 +77,12 @@ namespace Skyline.DataMiner.SDM.ObjectLinking.Middleware
 				throw result.ToException();
 			}
 
-			next(oToCreateOrUpdate);
+			return next(oToCreateOrUpdate);
 		}
 
 		public void OnDelete(IEnumerable<Link> oToDelete, Action<IEnumerable<Link>> next)
 		{
-			if(oToDelete is null)
+			if (oToDelete is null)
 			{
 				throw new ArgumentNullException(nameof(oToDelete), "The collection of links to delete cannot be null.");
 			}
@@ -170,7 +170,7 @@ namespace Skyline.DataMiner.SDM.ObjectLinking.Middleware
 			return next(query, pageSize);
 		}
 
-		public void OnUpdate(IEnumerable<Link> oToUpdate, Action<IEnumerable<Link>> next)
+		public IReadOnlyCollection<Link> OnUpdate(IEnumerable<Link> oToUpdate, Func<IEnumerable<Link>, IReadOnlyCollection<Link>> next)
 		{
 			var builder = new ValidationResult.Builder();
 			foreach (var link in oToUpdate)
@@ -185,10 +185,10 @@ namespace Skyline.DataMiner.SDM.ObjectLinking.Middleware
 				throw result.ToException();
 			}
 
-			next(oToUpdate);
+			return next(oToUpdate);
 		}
 
-		public void OnUpdate(Link oToUpdate, Action<Link> next)
+		public Link OnUpdate(Link oToUpdate, Func<Link, Link> next)
 		{
 			var result = Validate(oToUpdate);
 			if (!result.IsValid)
@@ -199,7 +199,7 @@ namespace Skyline.DataMiner.SDM.ObjectLinking.Middleware
 					.ToException();
 			}
 
-			next(oToUpdate);
+			return next(oToUpdate);
 		}
 
 		private static ValidationEntry Validate(Link link)
