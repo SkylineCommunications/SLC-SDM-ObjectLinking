@@ -8,9 +8,6 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 
 	using Skyline.DataMiner.Net;
 	using Skyline.DataMiner.Net.Messages.SLDataGateway;
-#if NETSTANDARD2_0_OR_GREATER
-	using Skyline.DataMiner.SDM.Middleware;
-#endif
 	using Skyline.DataMiner.SDM.ObjectLinking.Middleware;
 
 	/// <summary>
@@ -24,18 +21,17 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 		/// <param name="connection">The connection to use for link storage operations.</param>
 		public ObjectLinker(IConnection connection)
 		{
-			Links = Sdm.CreateProviderBuilder(new LinkDomStorageProvider(connection))
+			Links = Sdm.CreateBuilder()
+				.For<Link>()
+				.Use<IObservableBulkRepository<Link>>(new LinkDomStorageProvider(connection))
 				.AddMiddleware(new LinkValidationMiddleware())
-#if NETSTANDARD2_0_OR_GREATER
-				.AddMiddleware(new SdmTracingMiddleware<Link>())
-#endif
 				.Build();
 		}
 
 		/// <summary>
 		/// Gets the storage provider for <see cref="Link"/> objects.
 		/// </summary>
-		public IObservableBulkStorageProvider<Link> Links { get; }
+		public IObservableBulkRepository<Link> Links { get; }
 
 		/// <summary>
 		/// Creates a new link between two entities.
@@ -81,7 +77,7 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 				throw new ArgumentNullException(nameof(sdmObject));
 			}
 
-			return GetLinksByEntity(Convert.ToString(sdmObject.Guid));
+			return GetLinksByEntity(sdmObject.Identifier);
 		}
 
 		/// <summary>
@@ -133,7 +129,7 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 				throw new ArgumentNullException(nameof(sdmObject));
 			}
 
-			return GetLinkedEntities(Convert.ToString(sdmObject.Guid));
+			return GetLinkedEntities(sdmObject.Identifier);
 		}
 
 		/// <summary>
@@ -164,21 +160,22 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 		/// <summary>
 		/// Gets a link by its unique identifier.
 		/// </summary>
-		/// <param name="linkId">The unique identifier of the link.</param>
+		/// <param name="linkIdentifier">The unique identifier of the link.</param>
 		/// <returns>The <see cref="Link"/> with the specified identifier.</returns>
-		/// <exception cref="ArgumentException">Thrown if <paramref name="linkId"/> is <see cref="Guid.Empty"/>.</exception>
+		/// <exception cref="ArgumentException">Thrown if <paramref name="linkIdentifier"/> is not a valid guid or <see cref="Guid.Empty"/>.</exception>
 		/// <exception cref="KeyNotFoundException">Thrown if no link with the specified identifier is found.</exception>
-		public Link GetLinkById(Guid linkId)
+		public Link GetLinkById(string linkIdentifier)
 		{
-			if (linkId == Guid.Empty)
+			if (!Guid.TryParse(linkIdentifier, out var guid) ||
+				guid == Guid.Empty)
 			{
-				throw new ArgumentException("Identifier cannot be an empty GUID.", nameof(linkId));
+				throw new ArgumentException("Identifier should be a valid non empty guid.", nameof(linkIdentifier));
 			}
 
-			var link = Links.Read(LinkExposers.Guid.Equal(linkId)).FirstOrDefault();
+			var link = Links.Read(LinkExposers.Identifier.Equal(linkIdentifier)).FirstOrDefault();
 			if (link is null)
 			{
-				throw new KeyNotFoundException($"No link found with ID: {linkId}");
+				throw new KeyNotFoundException($"No link found with ID: {linkIdentifier}");
 			}
 
 			return link;

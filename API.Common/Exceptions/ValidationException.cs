@@ -63,11 +63,11 @@ namespace Skyline.DataMiner.SDM.ObjectLinking.Exceptions
 		/// Initializes a new instance of the <see cref="LinkValidationException"/> class with a specified error message and link identifier.
 		/// </summary>
 		/// <param name="message">The message that describes the error.</param>
-		/// <param name="linkGuid">The unique identifier of the link related to the validation error.</param>
-		public LinkValidationException(string message, Guid linkGuid)
-			: base($"{message} Guid: {linkGuid}")
+		/// <param name="linkIdentifier">The unique identifier of the link related to the validation error.</param>
+		public LinkValidationException(string message, string linkIdentifier)
+			: base($"{message} Identifier: {linkIdentifier}")
 		{
-			Link = new SdmObjectReference<Link>(linkGuid);
+			Link = new SdmObjectReference<Link>(linkIdentifier);
 		}
 
 		/// <summary>
@@ -85,12 +85,12 @@ namespace Skyline.DataMiner.SDM.ObjectLinking.Exceptions
 		/// Initializes a new instance of the <see cref="LinkEntityValidationException"/> class with a specified error message, link identifier, and entity identifier.
 		/// </summary>
 		/// <param name="message">The message that describes the error.</param>
-		/// <param name="linkGuid">The unique identifier of the link related to the validation error.</param>
+		/// <param name="linkIdentifier">The unique identifier of the link related to the validation error.</param>
 		/// <param name="entityId">The identifier of the entity related to the validation error.</param>
-		public LinkEntityValidationException(string message, Guid linkGuid, string entityId)
-			: base($"{message} (Guid: {linkGuid}, entity: {entityId})")
+		public LinkEntityValidationException(string message, string linkIdentifier, string entityId)
+			: base($"{message} (Identifier: {linkIdentifier}, entity: {entityId})")
 		{
-			Link = new SdmObjectReference<Link>(linkGuid);
+			Link = new SdmObjectReference<Link>(linkIdentifier);
 			EntityID = entityId;
 		}
 

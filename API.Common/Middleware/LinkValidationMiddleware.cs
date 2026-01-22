@@ -11,7 +11,7 @@ namespace Skyline.DataMiner.SDM.ObjectLinking.Middleware
 
 	using SLDataGateway.API.Types.Querying;
 
-	internal class LinkValidationMiddleware : IBulkStorageProviderMiddleware<Link>
+	internal class LinkValidationMiddleware : IBulkRepositoryMiddleware<Link>
 	{
 		public long OnCount(FilterElement<Link> filter, Func<FilterElement<Link>, long> next)
 		{
@@ -214,13 +214,14 @@ namespace Skyline.DataMiner.SDM.ObjectLinking.Middleware
 			// Validate that the Link has at least two entities.
 			if (link.EntityDescriptors.Count < 2)
 			{
-				entry.Exceptions.Add(new ArgumentException($"A Link (Guid: {link.Guid}) must contain at least two entities.", nameof(link)));
+				entry.Exceptions.Add(new ArgumentException($"A Link (Identifier: {link.Identifier}) must contain at least two entities.", nameof(link)));
 			}
 
 			// Optionally, check for a valid Link Id (if required).
-			if (link.Guid == Guid.Empty)
+			if (!Guid.TryParse(link.Identifier, out var guid) ||
+				guid == Guid.Empty)
 			{
-				entry.Exceptions.Add(new ArgumentException("Link Guid cannot be an empty guid.", nameof(link)));
+				entry.Exceptions.Add(new ArgumentException("Link Identifier should be a valid non empty guid.", nameof(link)));
 			}
 
 			// Check the entities in the link.
@@ -230,23 +231,23 @@ namespace Skyline.DataMiner.SDM.ObjectLinking.Middleware
 				var entity = link.EntityDescriptors[i];
 				if (entity is null)
 				{
-					entry.Exceptions.Add(new ArgumentException($"Entity at index {i} is null in Link (Guid: {link.Guid}).", nameof(link)));
+					entry.Exceptions.Add(new ArgumentException($"Entity at index {i} is null in Link (Identifier: {link.Identifier}).", nameof(link)));
 					continue;
 				}
 
 				if (!entitySet.Add(entity.ID))
 				{
-					entry.Exceptions.Add(new ArgumentException($"Entity at index '{i}' (Id: {entity.ID}) is a duplicate in Link (Guid: {link.Guid}).", nameof(link)));
+					entry.Exceptions.Add(new ArgumentException($"Entity at index '{i}' (Id: {entity.ID}) is a duplicate in Link (Identifier: {link.Identifier}).", nameof(link)));
 				}
 
 				if (String.IsNullOrEmpty(entity.ID))
 				{
-					entry.Exceptions.Add(new LinkEntityValidationException($"The ID of an entity in a Link cannot be null or empty.", link.Guid, entity.ID));
+					entry.Exceptions.Add(new LinkEntityValidationException($"The ID of an entity in a Link cannot be null or empty.", link.Identifier, entity.ID));
 				}
 
 				if (String.IsNullOrEmpty(entity.DisplayName))
 				{
-					entry.Exceptions.Add(new ValidationException($"The DisplayName of an entity (Id: {entity.ID}) in Link (Guid: {link.Guid}) cannot be null or empty."));
+					entry.Exceptions.Add(new ValidationException($"The DisplayName of an entity (Id: {entity.ID}) in Link (Identifier: {link.Identifier}) cannot be null or empty."));
 				}
 			}
 
