@@ -88,7 +88,7 @@ public class Script
 				Identifier = "a5e01a18-7704-40fc-b2d4-b4b02b096ba9",
 				ID = "standard_data_model_object_linking",
 				DisplayName = "SDM Object Linking",
-				Version = "2.0.0-rc1",
+				Version = "2.0.0",
 			};
 
 			registrar.Solutions.CreateOrUpdate(new[] { solution });
