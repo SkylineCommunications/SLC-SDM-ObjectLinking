@@ -82,35 +82,44 @@ public class Script
 			domInstaller.InstallDefaultContent();
 
 			// Register the solution
-			var registrar = engine.GetSdmRegistrar();
-			var solution = new SolutionRegistration
+			try
 			{
-				Guid = new Guid("a5e01a18-7704-40fc-b2d4-b4b02b096ba9"),
-				ID = "standard_data_model_object_linking",
-				DisplayName = "SDM Object Linking",
-				Version = "1.3.1",
-				DefaultApiScriptName = "",
-				DefaultApiEndpoint = "",
-				VisualizationEndpoint = "",
-				UninstallScript = "",
-			};
+				var registrar = engine.GetSdmRegistrar();
+				var solution = new SolutionRegistration
+				{
+					Guid = new Guid("a5e01a18-7704-40fc-b2d4-b4b02b096ba9"),
+					ID = "standard_data_model_object_linking",
+					DisplayName = "SDM Object Linking",
+					Version = "1.3.2",
+					DefaultApiScriptName = "",
+					DefaultApiEndpoint = "",
+					VisualizationEndpoint = "",
+					UninstallScript = "",
+				};
 
-			var linkModel = new ModelRegistration
-			{
-				Guid = new Guid("ddebbe81-7f39-41d0-aed6-6c4079baaa96"),
-				Name = "standard_data_model_object_link",
-				DisplayName = "SDM Object Link",
-				Version = "1.0.1",
-				ApiScriptName = "",
-				ApiEndpoint = "",
-				VisualizationEndpoint = "",
-				Solution = solution,
-			};
+				var linkModel = new ModelRegistration
+				{
+					Guid = new Guid("ddebbe81-7f39-41d0-aed6-6c4079baaa96"),
+					Name = "standard_data_model_object_link",
+					DisplayName = "SDM Object Link",
+					Version = "1.0.1",
+					ApiScriptName = "",
+					ApiEndpoint = "",
+					VisualizationEndpoint = "",
+					Solution = solution,
+				};
 
-			registrar.RegisterSolution(solution, new[]
+				registrar.RegisterSolution(solution, new[]
+				{
+					linkModel,
+				});
+
+				installer.Log("Registered SDM Object Linking solution and models");
+			}
+			catch (Exception ex)
 			{
-				linkModel,
-			});
+				installer.Log("SDM Registration is not installed skipping registration step...");
+			}
 		}
 		catch (Exception e)
 		{
