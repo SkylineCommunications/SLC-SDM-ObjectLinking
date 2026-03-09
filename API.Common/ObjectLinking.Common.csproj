@@ -32,11 +32,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="Skyline.DataMiner.Files.Skyline.DataMiner.Storage.Types" Version="10.5.2" />
-		<PackageReference Include="Skyline.DataMiner.Files.SLNetTypes" Version="10.5.2" />
-		<PackageReference Include="Skyline.DataMiner.SDM" Version="1.0.1" />
-		<PackageReference Include="Skyline.DataMiner.Utils.SecureCoding.Analyzers" Version="2.2.1">
+		<PackageReference Include="Newtonsoft.Json" />
+		<PackageReference Include="Skyline.DataMiner.Files.Skyline.DataMiner.Storage.Types" />
+		<PackageReference Include="Skyline.DataMiner.Files.SLNetTypes" />
+		<PackageReference Include="Skyline.DataMiner.SDM" />
+		<PackageReference Include="Skyline.DataMiner.Utils.SecureCoding.Analyzers">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>

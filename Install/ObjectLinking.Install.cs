@@ -50,12 +50,17 @@ DATE		VERSION		AUTHOR			COMMENTS
 */
 
 using System;
+using System.IO;
+using System.Runtime.Remoting.Contexts;
+
+using Shared;
 
 using Skyline.AppInstaller;
+using Skyline.ArtifactInstaller;
 using Skyline.DataMiner.Automation;
 using Skyline.DataMiner.Net.AppPackages;
 using Skyline.DataMiner.SDM.ObjectLinking.Install.DOM;
-using Skyline.DataMiner.SDM.Registration;
+using Skyline.DataMiner.Utils.SecureCoding.SecureIO;
 
 /// <summary>
 /// DataMiner Script Class.
@@ -75,38 +80,56 @@ public class Script
 			engine.Timeout = new TimeSpan(0, 10, 0);
 			engine.GenerateInformation("Starting installation");
 			var installer = new AppInstaller(Engine.SLNetRaw, context);
+			if (!PreRequisite(installer))
+			{
+				engine.ExitFail("Cannot install Object Linking solution. Please make sure you meet the prerequisites and try again.");
+			}
+
 			installer.InstallDefaultContent();
 
 			// Install DOM Module
 			var domInstaller = new DomInstaller(engine.GetUserConnection(), installer.Log);
 			domInstaller.InstallDefaultContent();
 
-			// Register the solution
-			var registrar = engine.GetSdmRegistrar();
-			var solution = new SolutionRegistration
-			{
-				Identifier = "a5e01a18-7704-40fc-b2d4-b4b02b096ba9",
-				ID = "standard_data_model_object_linking",
-				DisplayName = "SDM Object Linking",
-				Version = "2.0.0",
-			};
-
-			registrar.Solutions.CreateOrUpdate(new[] { solution });
-
-			var linkModel = new ModelRegistration
-			{
-				Identifier = "ddebbe81-7f39-41d0-aed6-6c4079baaa96",
-				Name = "standard_data_model_object_link",
-				DisplayName = "SDM Object Link",
-				Version = "1.0.1",
-				Solution = solution,
-			};
-
-			registrar.Models.CreateOrUpdate(new[] { linkModel });
+			// Register the Object Linking solution in SDM
+			Register(engine, context, installer);
 		}
 		catch (Exception e)
 		{
 			engine.ExitFail($"Exception encountered during installation: {e}");
+		}
+	}
+
+	private static bool PreRequisite(AppInstaller installer)
+	{
+		// Check if SDM is installed
+		var solutionLibrariesFolder = @"C:\Skyline DataMiner\ProtocolScripts\DllImport\SolutionLibraries";
+		var devPackFolder = SecurePath.ConstructSecurePathWithSubDirectories(solutionLibrariesFolder, "SDM.Abstractions");
+		var devPackPath = SecurePath.ConstructSecurePathWithSubDirectories(devPackFolder, "Skyline.DataMiner.Dev.Utils.SDM.Abstractions.dll");
+
+		var result = File.Exists(devPackPath);
+		if (!result)
+		{
+			installer.Log($"Prerequisite check failed: You need to install SDM first.");
+		}
+
+		return result;
+	}
+
+	private static void Register(IEngine engine, AppInstallContext context, AppInstaller installer)
+	{
+		try
+		{
+			installer.Log($"Registering Solution Object Linking [{Constants.CatalogIdentifier}] with version {context.AppInfo.Version} in SDM..");
+
+			var subScript = engine.PrepareSubScript(Constants.RegistrationScriptName);
+			subScript.SelectScriptParam("version", context.AppInfo.Version);
+			subScript.Synchronous = true;
+			subScript.StartScript();
+		}
+		catch
+		{
+			installer.Log("Failed to register the solution in SDM.");
 		}
 	}
 }
