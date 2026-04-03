@@ -1,9 +1,9 @@
 ﻿[assembly: System.Reflection.AssemblyMetadata("RepositoryUrl", "https://github.com/SkylineCommunications/SLC-SDM-ObjectLinking")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("ObjectLinking.CommonTests")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("ObjectLinking.Install")]
-[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Skyline.DataMiner.SDM.ObjectLinking.Automation")]
-[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Skyline.DataMiner.SDM.ObjectLinking.GQI")]
-[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Skyline.DataMiner.SDM.ObjectLinking.Protocol")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Skyline.DataMiner.Dev.Utils.SDM.ObjectLinking.Automation")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Skyline.DataMiner.Dev.Utils.SDM.ObjectLinking.GQI")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Skyline.DataMiner.Dev.Utils.SDM.ObjectLinking.Protocol")]
 [assembly: System.Runtime.Versioning.TargetFramework(".NETFramework,Version=v4.8", FrameworkDisplayName=".NET Framework 4.8")]
 namespace Skyline.DataMiner.SDM
 {

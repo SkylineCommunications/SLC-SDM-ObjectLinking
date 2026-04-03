@@ -43,9 +43,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<InternalsVisibleTo Include="Skyline.DataMiner.SDM.ObjectLinking.Automation" />
-		<InternalsVisibleTo Include="Skyline.DataMiner.SDM.ObjectLinking.GQI" />
-		<InternalsVisibleTo Include="Skyline.DataMiner.SDM.ObjectLinking.Protocol" />
+		<InternalsVisibleTo Include="Skyline.DataMiner.Dev.Utils.SDM.ObjectLinking.Automation" />
+		<InternalsVisibleTo Include="Skyline.DataMiner.Dev.Utils.SDM.ObjectLinking.GQI" />
+		<InternalsVisibleTo Include="Skyline.DataMiner.Dev.Utils.SDM.ObjectLinking.Protocol" />
 		<InternalsVisibleTo Include="ObjectLinking.Install" />
 		<InternalsVisibleTo Include="ObjectLinking.CommonTests" />
 	</ItemGroup>
