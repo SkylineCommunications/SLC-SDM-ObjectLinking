@@ -4,7 +4,7 @@
 		<TargetFramework>net48</TargetFramework>
 		<ImplicitUsings>disable</ImplicitUsings>
 		<Nullable>disable</Nullable>
-		<AssemblyName>Skyline.DataMiner.SDM.ObjectLinking.Protocol</AssemblyName>
+		<AssemblyName>Skyline.DataMiner.Dev.Utils.SDM.ObjectLinking.Protocol</AssemblyName>
 		<RootNamespace>Skyline.DataMiner.SDM.ObjectLinking</RootNamespace>
 		<Version>0.2.0-B002</Version>
 		<PackageTags>Skyline;DataMiner</PackageTags>

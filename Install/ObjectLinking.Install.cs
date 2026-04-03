@@ -60,6 +60,7 @@ using Skyline.ArtifactInstaller;
 using Skyline.DataMiner.Automation;
 using Skyline.DataMiner.Core.DataMinerSystem.Automation;
 using Skyline.DataMiner.Net.AppPackages;
+using Skyline.DataMiner.SDM.ObjectLinking.Install.DevPack;
 using Skyline.DataMiner.SDM.ObjectLinking.Install.DOM;
 using Skyline.DataMiner.Utils.SecureCoding.SecureIO;
 
@@ -87,6 +88,10 @@ public class Script
 			}
 
 			installer.InstallDefaultContent();
+
+			// Install the Object Linking DevPack
+			var devPackInstaller = new DevPackInstaller(installer, engine);
+			devPackInstaller.DeployAllDevPacks();
 
 			// Install DOM Module
 			var domInstaller = new DomInstaller(engine, installer.Log);

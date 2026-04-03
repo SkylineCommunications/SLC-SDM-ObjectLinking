@@ -35,5 +35,13 @@
 		<InternalsVisibleTo Include="ObjectLinking.CommonTests" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Reference Include="System.ServiceProcess" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="SetupContent\DevPack\" />
+	</ItemGroup>
+
 	<Import Project="..\Shared\Shared.projitems" Label="Shared" />
 </Project>
