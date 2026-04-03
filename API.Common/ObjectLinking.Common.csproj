@@ -9,7 +9,7 @@
 		<Nullable>disable</Nullable>
 		<AssemblyName>Skyline.DataMiner.SDM.ObjectLinking.Common</AssemblyName>
 		<RootNamespace>Skyline.DataMiner.SDM.ObjectLinking</RootNamespace>
-		<Version>0.1.0-B004</Version>
+		<Version>0.2.0-B002</Version>
 		<PackageTags>Skyline;DataMiner</PackageTags>
 		<PackageProjectUrl>https://skyline.be</PackageProjectUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
@@ -43,11 +43,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<InternalsVisibleTo Include="ObjectLinking.CommonTests" />
-		<InternalsVisibleTo Include="ObjectLinking.Automation" />
-		<InternalsVisibleTo Include="ObjectLinking.GQI" />
+		<InternalsVisibleTo Include="Skyline.DataMiner.SDM.ObjectLinking.Automation" />
+		<InternalsVisibleTo Include="Skyline.DataMiner.SDM.ObjectLinking.GQI" />
+		<InternalsVisibleTo Include="Skyline.DataMiner.SDM.ObjectLinking.Protocol" />
 		<InternalsVisibleTo Include="ObjectLinking.Install" />
-		<InternalsVisibleTo Include="ObjectLinking.Protocol" />
+		<InternalsVisibleTo Include="ObjectLinking.CommonTests" />
 	</ItemGroup>
 
 	<Import Project="..\Shared\Shared.projitems" Label="Shared" />

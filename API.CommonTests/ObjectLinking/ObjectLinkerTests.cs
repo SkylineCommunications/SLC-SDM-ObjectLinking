@@ -37,6 +37,7 @@
 				ID = "entity1",
 				DisplayName = "Entity 1",
 				ModelName = "Model A",
+				SolutionID = Guid.NewGuid().ToString(),
 				SolutionName = "Solution X",
 				ParentID = "parent1",
 				ParentModelName = "Parent Model A",
@@ -46,6 +47,7 @@
 				ID = "entity2",
 				DisplayName = "Entity 2",
 				ModelName = "Model B",
+				SolutionID = Guid.NewGuid().ToString(),
 				SolutionName = "Solution Y",
 				ParentID = "parent2",
 				ParentModelName = "Parent Model B",
@@ -53,17 +55,14 @@
 
 			var link = new Link
 			{
-				EntityDescriptors =
-				{
-					entity1,
-				},
+				Source = entity1,
 			};
 
 			var act = () => linker.Links.Create(link);
 
 			act.Should().Throw<ValidationException>();
 
-			link.EntityDescriptors.Add(entity2);
+			link.Target = entity2;
 
 			act.Should().NotThrow();
 
@@ -80,6 +79,7 @@
 				ID = "entity1",
 				DisplayName = "Entity 1",
 				ModelName = "Model A",
+				SolutionID = Guid.NewGuid().ToString(),
 				SolutionName = "Solution X",
 				ParentID = "parent1",
 				ParentModelName = "Parent Model A",
@@ -89,6 +89,7 @@
 				ID = "entity2",
 				DisplayName = "Entity 2",
 				ModelName = "Model B",
+				SolutionID = Guid.NewGuid().ToString(),
 				SolutionName = "Solution Y",
 				ParentID = "parent2",
 				ParentModelName = "Parent Model B",
@@ -98,6 +99,7 @@
 				ID = "entity3",
 				DisplayName = "Entity 3",
 				ModelName = "Model C",
+				SolutionID = Guid.NewGuid().ToString(),
 				SolutionName = "Solution Z",
 				ParentID = "parent3",
 				ParentModelName = "Parent Model C",
@@ -108,7 +110,10 @@
 			linker.Create(entity3, entity1);
 
 			long result = -1;
-			var act = () => result = linker.Links.Count(LinkExposers.EntityDescriptors.SolutionName.Equal("Solution Z"));
+			var act = () => result = linker.Links.Count(
+				new ORFilterElement<Link>(
+					LinkExposers.Source.SolutionName.Equal("Solution Z"),
+					LinkExposers.Target.SolutionName.Equal("Solution Z")));
 
 			act.Should().NotThrow();
 			result.Should().Be(2);

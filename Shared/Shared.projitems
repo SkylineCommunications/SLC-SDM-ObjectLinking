@@ -10,6 +10,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Constants.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Maps\SlcObject_LinkingIds.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Maps\LinkDomMapper.cs" />
   </ItemGroup>
 </Project>

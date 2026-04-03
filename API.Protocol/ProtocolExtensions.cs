@@ -12,6 +12,12 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 	public static class ProtocolExtensions
 	{
 		/// <summary>
+		/// Allows an override of the behavior of GetObjectLinker to return a Fake or Mock of Skyline.DataMiner.SDM.ObjectLinking.IObjectLinker.
+		/// Important: When this is used, unit tests should never be run in parallel.
+		/// </summary>
+		public static Func<SLProtocol, IObjectLinker> OverrideGetObjectLinker = (SLProtocol protocol) => new ObjectLinker(protocol.SLNet.RawConnection);
+
+		/// <summary>
 		/// Gets an <see cref="ObjectLinker"/> instance for the specified <see cref="SLProtocol"/>.
 		/// </summary>
 		/// <param name="protocol">The protocol instance for which to get the object linker.</param>
@@ -21,14 +27,14 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 		/// <exception cref="ArgumentNullException">
 		/// Thrown when <paramref name="protocol"/> is <c>null</c>.
 		/// </exception>
-		public static ObjectLinker GetObjectLinker(this SLProtocol protocol)
+		public static IObjectLinker GetObjectLinker(this SLProtocol protocol)
 		{
 			if (protocol is null)
 			{
 				throw new ArgumentNullException(nameof(protocol), "protocol cannot be null.");
 			}
 
-			return new ObjectLinker(protocol.SLNet.RawConnection);
+			return OverrideGetObjectLinker(protocol);
 		}
 	}
 }
