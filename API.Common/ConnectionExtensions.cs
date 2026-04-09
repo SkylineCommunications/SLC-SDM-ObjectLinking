@@ -13,7 +13,7 @@
 		/// Allows an override of the behavior of GetObjectLinker to return a Fake or Mock of Skyline.DataMiner.SDM.ObjectLinking.IObjectLinker.
 		/// Important: When this is used, unit tests should never be run in parallel.
 		/// </summary>
-		public static Func<IConnection, IObjectLinker> OverrideGetObjectLinker = (IConnection) => new ObjectLinker(IConnection);
+		public static Func<IConnection, IObjectLinker> OverrideGetObjectLinker = (IConnection connection) => new ObjectLinker(connection);
 
 		/// <summary>
 		/// Gets an <see cref="ObjectLinker"/> instance for the specified <see cref="IConnection"/>.
