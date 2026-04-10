@@ -16,7 +16,6 @@
 		<PackageReference Include="FluentAssertions" />
 		<PackageReference Include="PublicApiGenerator" />
 		<PackageReference Include="Verify.MSTest" />
-		<PackageReference Include="FluentAssertions" />
 		<PackageReference Include="Moq" />
 		<PackageReference Include="Skyline.DataMiner.Utils.DOM" />
 		<PackageReference Include="Skyline.DataMiner.Dev.Automation" />
