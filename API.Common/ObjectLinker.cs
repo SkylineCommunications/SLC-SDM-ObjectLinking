@@ -7,66 +7,98 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 	using System.Linq;
 
 	using Skyline.DataMiner.Net;
+	using Skyline.DataMiner.Net.Helper;
 	using Skyline.DataMiner.Net.Messages.SLDataGateway;
 	using Skyline.DataMiner.SDM.ObjectLinking.Middleware;
+	using Skyline.DataMiner.SDM.ObjectLinking.Models;
 
-	/// <summary>
-	/// Provides functionality to create and query links between entities in the SDM object model.
-	/// </summary>
-	public class ObjectLinker
+	/// <inheritdoc/>
+	public class ObjectLinker : IObjectLinker
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ObjectLinker"/> class.
 		/// </summary>
 		/// <param name="connection">The connection to use for link storage operations.</param>
-		public ObjectLinker(IConnection connection)
+		/// <exception cref="ArgumentNullException">Thrown if <paramref name="connection"/> is <c>null</c>.</exception>
+		internal ObjectLinker(IConnection connection)
 		{
-			Links = new LinkDomStorageProvider(connection)
+			Links = new LinkDomRepository(connection)
 				.WithMiddleware(new LinkValidationMiddleware());
 		}
 
-		/// <summary>
-		/// Gets the storage provider for <see cref="Link"/> objects.
-		/// </summary>
+		/// <inheritdoc/>
 		public IBulkRepository<Link> Links { get; }
 
-		/// <summary>
-		/// Creates a new link between two entities.
-		/// </summary>
-		/// <param name="entityA">The first entity to link.</param>
-		/// <param name="entityB">The second entity to link.</param>
-		/// <exception cref="ArgumentNullException">Thrown if <paramref name="entityA"/> or <paramref name="entityB"/> is <c>null</c>.</exception>
-		public void Create(EntityDescriptor entityA, EntityDescriptor entityB)
+		/// <inheritdoc/>
+		public Link Create(EntityDescriptor source, EntityDescriptor target)
 		{
-			Links.Create(new Link
+			return Links.Create(new Link
 			{
-				EntityDescriptors =
-				{
-					entityA ?? throw new ArgumentNullException(nameof(entityA)),
-					entityB ?? throw new ArgumentNullException(nameof(entityB)),
-				},
+				Direction = Models.LinkDirection.Symmetric,
+				Source = source ?? throw new ArgumentNullException(nameof(source)),
+				Target = target ?? throw new ArgumentNullException(nameof(target)),
 			});
 		}
 
-		/// <summary>
-		/// Gets all links that reference the specified entity.
-		/// </summary>
-		/// <param name="entity">The entity to search for.</param>
-		/// <returns>A list of <see cref="Link"/> objects referencing the entity.</returns>
-		/// <exception cref="ArgumentNullException">Thrown if <paramref name="entity"/> is <c>null</c>.</exception>
-		public List<Link> GetLinksByEntity(EntityDescriptor entity)
+		/// <inheritdoc/>
+		public Link Create(EntityDescriptor source, EntityDescriptor target, LinkDirection direction)
 		{
-			return GetLinksByEntity(entity?.ID ?? throw new ArgumentNullException(nameof(entity)));
+			return Links.Create(new Link
+			{
+				Direction = direction,
+				Source = source ?? throw new ArgumentNullException(nameof(source)),
+				Target = target ?? throw new ArgumentNullException(nameof(target)),
+			});
 		}
 
-		/// <summary>
-		/// Gets all links that reference the specified SDM object.
-		/// </summary>
-		/// <typeparam name="T">The type of the SDM object.</typeparam>
-		/// <param name="sdmObject">The SDM object to search for.</param>
-		/// <returns>A list of <see cref="Link"/> objects referencing the SDM object.</returns>
-		/// <exception cref="ArgumentNullException">Thrown if <paramref name="sdmObject"/> is <c>null</c>.</exception>
-		public List<Link> GetLinksByEntity<T>(SdmObject<T> sdmObject)
+		/// <inheritdoc/>
+		public IList<Link> GetLinksByEntity(EntityDescriptor entity)
+		{
+			if (entity is null)
+			{
+				throw new ArgumentNullException(nameof(entity));
+			}
+
+			if (String.IsNullOrEmpty(entity.ID) ||
+				String.IsNullOrEmpty(entity.ModelName))
+			{
+				throw new ArgumentException($"Entity needs to have at least an id and a model name.");
+			}
+
+			// Filter to get links where the entity is either the source or the target
+			var filter = new ORFilterElement<Link>(
+				new ANDFilterElement<Link>( // Symmetric, meaning id can be either source or target
+					LinkExposers.Direction.Equal(LinkDirection.Symmetric),
+					new ORFilterElement<Link>(
+						new ANDFilterElement<Link>(
+							LinkExposers.Source.ID.Equal(entity.ID),
+							LinkExposers.Source.ModelName.Equal(entity.ModelName)),
+						new ANDFilterElement<Link>(
+							LinkExposers.Target.ID.Equal(entity.ID),
+							LinkExposers.Target.ModelName.Equal(entity.ModelName)))),
+				new ANDFilterElement<Link>( // Forward, meaning id is source
+					LinkExposers.Direction.Equal(LinkDirection.Forward),
+					new ANDFilterElement<Link>(
+						LinkExposers.Source.ID.Equal(entity.ID),
+						LinkExposers.Source.ModelName.Equal(entity.ModelName))),
+				new ANDFilterElement<Link>( // Backward, meaning id is target
+					LinkExposers.Direction.Equal(LinkDirection.Backward),
+					new ANDFilterElement<Link>(
+						LinkExposers.Target.ID.Equal(entity.ID),
+						LinkExposers.Target.ModelName.Equal(entity.ModelName)))
+				);
+
+			var result = new List<Link>();
+			foreach (var page in Links.ReadPaged(filter))
+			{
+				result.AddRange(page);
+			}
+
+			return result;
+		}
+
+		/// <inheritdoc/>
+		public IList<Link> GetLinksByEntity<T>(SdmObject<T> sdmObject)
 			where T : SdmObject<T>
 		{
 			if (sdmObject is null)
@@ -77,22 +109,31 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 			return GetLinksByEntity(sdmObject.Identifier);
 		}
 
-		/// <summary>
-		/// Gets all links that reference the specified entity ID.
-		/// </summary>
-		/// <param name="entityId">The ID of the entity to search for.</param>
-		/// <returns>A list of <see cref="Link"/> objects referencing the entity ID.</returns>
-		/// <exception cref="ArgumentNullException">Thrown if <paramref name="entityId"/> is <c>null</c> or empty.</exception>
-		public List<Link> GetLinksByEntity(string entityId)
+		/// <inheritdoc/>
+		public IList<Link> GetLinksByEntity(string entityId)
 		{
 			if (String.IsNullOrEmpty(entityId))
 			{
 				throw new ArgumentNullException(nameof(entityId));
 			}
 
-			var result = new List<Link>();
+			// Filter to get links where the entity is either the source or the target
+			var filter = new ORFilterElement<Link>(
+				new ANDFilterElement<Link>( // Symmetric, meaning id can be either source or target
+					LinkExposers.Direction.Equal(LinkDirection.Symmetric),
+					new ORFilterElement<Link>(
+						LinkExposers.Source.ID.Equal(entityId),
+						LinkExposers.Target.ID.Equal(entityId))),
+				new ANDFilterElement<Link>( // Forward, meaning id is source
+					LinkExposers.Direction.Equal(LinkDirection.Forward),
+					LinkExposers.Source.ID.Equal(entityId)),
+				new ANDFilterElement<Link>( // Backward, meaning id is target
+					LinkExposers.Direction.Equal(LinkDirection.Backward),
+					LinkExposers.Target.ID.Equal(entityId))
+				);
 
-			foreach (var page in Links.ReadPaged(LinkExposers.EntityDescriptors.ID.Equal(entityId)))
+			var result = new List<Link>();
+			foreach (var page in Links.ReadPaged(filter))
 			{
 				result.AddRange(page);
 			}
@@ -100,25 +141,21 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 			return result;
 		}
 
-		/// <summary>
-		/// Gets all entities that are linked to the specified entity.
-		/// </summary>
-		/// <param name="entity">The entity to find linked entities for.</param>
-		/// <returns>A list of <see cref="EntityDescriptor"/> objects linked to the specified entity.</returns>
-		/// <exception cref="ArgumentNullException">Thrown if <paramref name="entity"/> is <c>null</c>.</exception>
-		public List<EntityDescriptor> GetLinkedEntities(EntityDescriptor entity)
+		/// <inheritdoc/>
+		public IList<EntityDescriptor> GetLinkedEntities(EntityDescriptor entity)
 		{
-			return GetLinkedEntities(entity?.ID ?? throw new ArgumentNullException(nameof(entity)));
+			var result = new List<EntityDescriptor>();
+			foreach (var link in GetLinksByEntity(entity))
+			{
+				// Exclude the entity itself from the results, in case it's present as source or target in the link
+				result.AddRange(link.EntityDescriptors.Where(e => e.ID != entity.ID && e.ModelName != entity.ModelName));
+			}
+
+			return result;
 		}
 
-		/// <summary>
-		/// Gets all entities that are linked to the specified SDM object.
-		/// </summary>
-		/// <typeparam name="T">The type of the SDM object.</typeparam>
-		/// <param name="sdmObject">The SDM object to find linked entities for.</param>
-		/// <returns>A list of <see cref="EntityDescriptor"/> objects linked to the specified SDM object.</returns>
-		/// <exception cref="ArgumentNullException">Thrown if <paramref name="sdmObject"/> is <c>null</c>.</exception>
-		public List<EntityDescriptor> GetLinkedEntities<T>(SdmObject<T> sdmObject)
+		/// <inheritdoc/>
+		public IList<EntityDescriptor> GetLinkedEntities<T>(SdmObject<T> sdmObject)
 			where T : SdmObject<T>
 		{
 			if (sdmObject is null)
@@ -129,13 +166,8 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 			return GetLinkedEntities(sdmObject.Identifier);
 		}
 
-		/// <summary>
-		/// Gets all entities that are linked to the specified entity ID.
-		/// </summary>
-		/// <param name="entityId">The ID of the entity to find linked entities for.</param>
-		/// <returns>A list of <see cref="EntityDescriptor"/> objects linked to the specified entity ID.</returns>
-		/// <exception cref="ArgumentNullException">Thrown if <paramref name="entityId"/> is <c>null</c> or empty.</exception>
-		public List<EntityDescriptor> GetLinkedEntities(string entityId)
+		/// <inheritdoc/>
+		public IList<EntityDescriptor> GetLinkedEntities(string entityId)
 		{
 			if (String.IsNullOrEmpty(entityId))
 			{
@@ -143,24 +175,16 @@ namespace Skyline.DataMiner.SDM.ObjectLinking
 			}
 
 			var result = new List<EntityDescriptor>();
-
-			foreach (var page in Links.ReadPaged(LinkExposers.EntityDescriptors.ID.Equal(entityId)))
+			foreach (var link in GetLinksByEntity(entityId))
 			{
-				result.AddRange(
-					page.SelectMany(l =>
-						l.EntityDescriptors.Where(e => e.ID != entityId)));
+				// Exclude the entity itself from the results, in case it's present as source or target in the link
+				result.AddRange(link.EntityDescriptors.Where(e => e.ID != entityId));
 			}
 
 			return result;
 		}
 
-		/// <summary>
-		/// Gets a link by its unique identifier.
-		/// </summary>
-		/// <param name="linkIdentifier">The unique identifier of the link.</param>
-		/// <returns>The <see cref="Link"/> with the specified identifier.</returns>
-		/// <exception cref="ArgumentException">Thrown if <paramref name="linkIdentifier"/> is not a valid guid or <see cref="Guid.Empty"/>.</exception>
-		/// <exception cref="KeyNotFoundException">Thrown if no link with the specified identifier is found.</exception>
+		/// <inheritdoc/>
 		public Link GetLinkById(string linkIdentifier)
 		{
 			if (!Guid.TryParse(linkIdentifier, out var guid) ||

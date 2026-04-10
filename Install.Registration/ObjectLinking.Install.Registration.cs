@@ -69,7 +69,7 @@ namespace ObjectLinkingInstallRegistration
 				Identifier = "ddebbe81-7f39-41d0-aed6-6c4079baaa96",
 				Name = "standard_data_model_object_link",
 				DisplayName = "SDM Object Link",
-				Version = "1.0.1",
+				Version = "1.0.2",
 				Solution = solution,
 			};
 

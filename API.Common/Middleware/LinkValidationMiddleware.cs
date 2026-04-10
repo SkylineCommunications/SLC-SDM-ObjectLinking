@@ -4,6 +4,7 @@ namespace Skyline.DataMiner.SDM.ObjectLinking.Middleware
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Linq;
 
 	using Skyline.DataMiner.Net.Messages.SLDataGateway;
 	using Skyline.DataMiner.SDM.ObjectLinking.Exceptions;
@@ -211,10 +212,11 @@ namespace Skyline.DataMiner.SDM.ObjectLinking.Middleware
 				return entry;
 			}
 
-			// Validate that the Link has at least two entities.
-			if (link.EntityDescriptors.Count < 2)
+			// Validate that the Link has a source and target entities.
+			if (link.Source is null ||
+				link.Target is null)
 			{
-				entry.Exceptions.Add(new ArgumentException($"A Link (Identifier: {link.Identifier}) must contain at least two entities.", nameof(link)));
+				entry.Exceptions.Add(new ArgumentException($"A Link (Identifier: {link.Identifier}) must contain a source and a target entity.", nameof(link)));
 			}
 
 			// Optionally, check for a valid Link Id (if required).
@@ -224,32 +226,50 @@ namespace Skyline.DataMiner.SDM.ObjectLinking.Middleware
 				entry.Exceptions.Add(new ArgumentException("Link Identifier should be a valid non empty guid.", nameof(link)));
 			}
 
-			// Check the entities in the link.
 			var entitySet = new HashSet<string>();
-			for (int i = 0; i < link.EntityDescriptors.Count; i++)
+			IEnumerable<Exception> ValidateEntity(EntityDescriptor entity, string entityPosition)
 			{
-				var entity = link.EntityDescriptors[i];
 				if (entity is null)
 				{
-					entry.Exceptions.Add(new ArgumentException($"Entity at index {i} is null in Link (Identifier: {link.Identifier}).", nameof(link)));
-					continue;
+					// Already checked in the beginning of the method.
+					yield break;
 				}
 
 				if (!entitySet.Add(entity.ID))
 				{
-					entry.Exceptions.Add(new ArgumentException($"Entity at index '{i}' (Id: {entity.ID}) is a duplicate in Link (Identifier: {link.Identifier}).", nameof(link)));
+					yield return new ArgumentException($"{entityPosition} entity (Id: {entity.ID}) is a duplicate in Link (Identifier: {link.Identifier}).", nameof(link));
+					yield break;
 				}
 
 				if (String.IsNullOrEmpty(entity.ID))
 				{
-					entry.Exceptions.Add(new LinkEntityValidationException($"The ID of an entity in a Link cannot be null or empty.", link.Identifier, entity.ID));
+					yield return new LinkEntityValidationException($"ID of {entityPosition} entity cannot be null or empty.", link.Identifier, entity.ID);
+					yield break;
+				}
+
+				if (String.IsNullOrEmpty(entity.ModelName))
+				{
+					yield return new ValidationException($"ModelName of {entityPosition} entity (Id: {entity.ID}) in Link (Identifier: {link.Identifier}) cannot be null or empty.");
 				}
 
 				if (String.IsNullOrEmpty(entity.DisplayName))
 				{
-					entry.Exceptions.Add(new ValidationException($"The DisplayName of an entity (Id: {entity.ID}) in Link (Identifier: {link.Identifier}) cannot be null or empty."));
+					yield return new ValidationException($"DisplayName of {entityPosition} entity (Id: {entity.ID}) in Link (Identifier: {link.Identifier}) cannot be null or empty.");
+				}
+
+				if (String.IsNullOrEmpty(entity.SolutionID))
+				{
+					yield return new ValidationException($"SolutionID of {entityPosition} entity (Id: {entity.ID}) in Link (Identifier: {link.Identifier}) cannot be null or empty.");
+				}
+
+				if (String.IsNullOrEmpty(entity.SolutionName))
+				{
+					yield return new ValidationException($"SolutionName of {entityPosition} entity (Id: {entity.ID}) in Link (Identifier: {link.Identifier}) cannot be null or empty.");
 				}
 			}
+
+			entry.Exceptions.AddRange(ValidateEntity(link.Source, nameof(Link.Source)));
+			entry.Exceptions.AddRange(ValidateEntity(link.Target, nameof(Link.Target)));
 
 			return entry;
 		}

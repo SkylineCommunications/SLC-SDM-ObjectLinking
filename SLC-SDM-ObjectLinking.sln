@@ -15,22 +15,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectLinking.GQI", "API.GQ
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectLinking.Install", "Install\ObjectLinking.Install.csproj", "{1D34918E-781E-42F1-9D86-A9501645ECA8}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Internal", "Internal", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Code Analysis", "Code Analysis", "{095237AB-DDB9-4DFD-AE8E-C2E997C6F584}"
-	ProjectSection(SolutionItems) = preProject
-		Internal\Code Analysis\qaction-debug.ruleset = Internal\Code Analysis\qaction-debug.ruleset
-		Internal\Code Analysis\qaction-release.ruleset = Internal\Code Analysis\qaction-release.ruleset
-		Internal\Code Analysis\stylecop.json = Internal\Code Analysis\stylecop.json
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
 		Directory.Build.props = Directory.Build.props
 		Directory.Packages.props = Directory.Packages.props
 		global.json = global.json
-		LICENSE = LICENSE
+		LICENSE.txt = LICENSE.txt
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -49,6 +40,10 @@ EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Shared", "Shared\Shared.shproj", "{CD239CD2-ACEB-445D-A037-AB12C799442B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectLinking.Install.Registration", "Install.Registration\ObjectLinking.Install.Registration.csproj", "{CDAD818A-8EEB-4989-9432-C8AA4000540F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Install", "Install", "{5F953165-54C1-458F-A967-D21F830F2799}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ObjectLinking.Install.DOM", "Install.DOM\ObjectLinking.Install.DOM.csproj", "{E477F0F9-BFDD-4813-8964-4DA7CAF64764}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -84,14 +79,20 @@ Global
 		{CDAD818A-8EEB-4989-9432-C8AA4000540F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CDAD818A-8EEB-4989-9432-C8AA4000540F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CDAD818A-8EEB-4989-9432-C8AA4000540F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E477F0F9-BFDD-4813-8964-4DA7CAF64764}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E477F0F9-BFDD-4813-8964-4DA7CAF64764}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E477F0F9-BFDD-4813-8964-4DA7CAF64764}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E477F0F9-BFDD-4813-8964-4DA7CAF64764}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{095237AB-DDB9-4DFD-AE8E-C2E997C6F584} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{1D34918E-781E-42F1-9D86-A9501645ECA8} = {5F953165-54C1-458F-A967-D21F830F2799}
 		{384197A6-2879-4B9A-91C1-CC07BBBB31F9} = {8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}
 		{78D78469-BD55-4337-8B20-1E74EE8C4B9F} = {384197A6-2879-4B9A-91C1-CC07BBBB31F9}
+		{CDAD818A-8EEB-4989-9432-C8AA4000540F} = {5F953165-54C1-458F-A967-D21F830F2799}
+		{E477F0F9-BFDD-4813-8964-4DA7CAF64764} = {5F953165-54C1-458F-A967-D21F830F2799}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B1F7F865-1A7C-407B-A2C7-70A7CE6A7E91}

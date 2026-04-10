@@ -3,54 +3,51 @@
 namespace Skyline.DataMiner.SDM.ObjectLinking
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Linq;
+
+	using Skyline.DataMiner.SDM.ObjectLinking.Models;
 
 	/// <summary>
 	/// Represents a wrapper class for accessing a Link DOM instance.
 	/// The <see cref="Link"/> class provides simplified access to the data and functionality of the underlying DOM instance, allowing for easier manipulation and retrieval of data from DOM.
 	/// </summary>
-	public sealed partial class Link : IEquatable<Link>
+	[GenerateExposers]
+	////[SdmDomStorage("(slc)object_linking")]
+	public sealed class Link : SdmObject<Link>
 	{
-		public bool Equals(Link other)
+		public override string Identifier { get; set; } = Guid.NewGuid().ToString();
+
+		public LinkDirection Direction { get; set; }
+
+		public EntityDescriptor Source { get; set; }
+
+		public EntityDescriptor Target { get; set; }
+
+		public DateTime CreatedAt { get; internal set; }
+
+		public string CreatedBy { get; internal set; }
+
+		public DateTime LastModified { get; internal set; }
+
+		public string LastModifiedBy { get; internal set; }
+
+		[SdmIgnore]
+		public IEnumerable<EntityDescriptor> EntityDescriptors
 		{
-			if (other is null)
+			get
 			{
-				return false;
-			}
-
-			if (ReferenceEquals(this, other))
-			{
-				return true;
-			}
-
-			// Compare Entities property by sorting on ID to ensure order does not matter
-			if (EntityDescriptors is null && other.EntityDescriptors is null)
-			{
-				return true;
-			}
-
-			if (EntityDescriptors is null || other.EntityDescriptors is null)
-			{
-				return false;
-			}
-
-			if (EntityDescriptors.Count != other.EntityDescriptors.Count)
-			{
-				return false;
-			}
-
-			var thisEntitiesSorted = EntityDescriptors.OrderBy(e => e.ID).ToList();
-			var otherEntitiesSorted = other.EntityDescriptors.OrderBy(e => e.ID).ToList();
-
-			for (int i = 0; i < thisEntitiesSorted.Count; i++)
-			{
-				if (!Equals(thisEntitiesSorted[i], otherEntitiesSorted[i]))
+				if (Direction != LinkDirection.Backward)
 				{
-					return false;
+					yield return Source;
+					yield return Target;
+				}
+				else
+				{
+					yield return Target;
+					yield return Source;
 				}
 			}
-
-			return true;
 		}
 	}
 }

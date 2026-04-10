@@ -5,21 +5,37 @@ namespace Skyline.DataMiner.SDM.ObjectLinking.Install.DOM
 	using System;
 	using System.Linq;
 
-	using DomHelpers.SlcObject_Linking;
+	using global::ObjectLinking.Install.DOM;
 
+	using Skyline.DataMiner.Automation;
 	using Skyline.DataMiner.Net;
 	using Skyline.DataMiner.Net.Apps.DataMinerObjectModel;
 	using Skyline.DataMiner.Net.Apps.Modules;
 	using Skyline.DataMiner.Net.ManagerStore;
 	using Skyline.DataMiner.Net.Messages.SLDataGateway;
+	using Skyline.DataMiner.Net.Sections;
 	using Skyline.DataMiner.Utils.DOM.Builders;
 
 	public partial class DomInstaller
 	{
+		private readonly IEngine _engine;
 		private readonly IConnection _connection;
 		private readonly Action<string> _logMethod;
 
-		public DomInstaller(IConnection connection, Action<string> logMethod = null)
+		public DomInstaller(IEngine engine, Action<string> logMethod = null)
+		{
+			_engine = engine;
+			_connection = engine.GetUserConnection();
+			_logMethod = logMethod;
+		}
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="DomInstaller"/> class.
+		/// Used only for unit testing purposes, where we will never need to run a migration script.
+		/// </summary>
+		/// <param name="connection">Connection to DataMiner.</param>
+		/// <param name="logMethod">Optional log method.</param>
+		internal DomInstaller(IConnection connection, Action<string> logMethod = null)
 		{
 			_connection = connection;
 			_logMethod = logMethod;
@@ -30,7 +46,7 @@ namespace Skyline.DataMiner.SDM.ObjectLinking.Install.DOM
 			Log("Installation for Object Linking started...");
 
 			var moduleHelper = new ModuleSettingsHelper(_connection.HandleMessages);
-			var moduleExist = moduleHelper.ModuleSettings.Count(ModuleSettingsExposers.ModuleId.Equal(SlcObject_LinkingIds.ModuleId)) == 0;
+			var moduleExist = moduleHelper.ModuleSettings.Count(ModuleSettingsExposers.ModuleId.Equal(LinkDomMapper.ModuleId)) == 0;
 			if (!moduleExist)
 			{
 				Log("Installing Module Settings...");
@@ -41,11 +57,11 @@ namespace Skyline.DataMiner.SDM.ObjectLinking.Install.DOM
 			}
 
 			var module = new DomModuleBuilder()
-				.WithModuleId(SlcObject_LinkingIds.ModuleId)
+				.WithModuleId(LinkDomMapper.ModuleId)
 				.WithInformationEvents(false)
 				.WithHistory(false)
 				.Build();
-			Import(moduleHelper.ModuleSettings, ModuleSettingsExposers.ModuleId.Equal(SlcObject_LinkingIds.ModuleId), module);
+			Import(moduleHelper.ModuleSettings, ModuleSettingsExposers.ModuleId.Equal(LinkDomMapper.ModuleId), module);
 
 			if (!moduleExist)
 			{
@@ -56,7 +72,27 @@ namespace Skyline.DataMiner.SDM.ObjectLinking.Install.DOM
 				Log("Updated Module Settings");
 			}
 
-			var domHelper = new DomHelper(_connection.HandleMessages, SlcObject_LinkingIds.ModuleId);
+			var needsMigration = false;
+			var domHelper = new DomHelper(_connection.HandleMessages, LinkDomMapper.ModuleId);
+
+			var oldEntityDescriptionSectionId = new SectionDefinitionID(new Guid("75dd33f0-204e-4b51-bec3-3ae57065ebc0"))
+			{
+				ModuleId = "(slc)object_linking",
+			};
+			var existingLinkDefinition = domHelper.DomDefinitions.Read(DomDefinitionExposers.Id.Equal(LinkDomMapper.DomDefinitionId)).FirstOrDefault();
+			if (!(existingLinkDefinition is null) &&
+				existingLinkDefinition.SectionDefinitionLinks.Any(link => oldEntityDescriptionSectionId.Equals(link.SectionDefinitionID)))
+			{
+				Log("Making backup from old module...");
+
+				var moduleSettings = new ModuleSettingsHelper(_engine.SendSLNetMessages);
+				var exporter = new DomExporter(moduleSettings, _engine.SendSLNetMessages);
+				exporter.Progress += (sender, arg) => Log($"Busy, Exported {arg.Items} items...");
+				var backupPath = exporter.Export(LinkDomMapper.ModuleId);
+
+				Log($"Backup exported to: {backupPath}");
+			}
+
 			InstallLinks(domHelper);
 		}
 

@@ -1,0 +1,41 @@
+﻿<Project Sdk="Skyline.DataMiner.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net48</TargetFramework>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<DataMinerType>AutomationScript</DataMinerType>
+		<GenerateDataMinerPackage>False</GenerateDataMinerPackage>
+		<MinimumRequiredDmVersion>10.4.0.0 - 14003</MinimumRequiredDmVersion>
+		<Version>1.0.0</Version>
+		<VersionComment>Initial Version</VersionComment>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Include="OldDomHelper.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Skyline.DataMiner.Dev.Automation" />
+		<PackageReference Include="Skyline.DataMiner.SDM.ObjectLinking.Automation" />
+		<PackageReference Include="Skyline.DataMiner.SDM.Registration.Automation" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Skyline.DataMiner.CICD.CSharpAnalysis.Analyzer">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Skyline.DataMiner.Utils.SecureCoding.Analyzers">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<!--<ItemGroup>
+		<ProjectReference Include="..\API.Automation\ObjectLinking.Automation.csproj" />
+	</ItemGroup>-->
+
+	<ItemGroup>
+	  <Reference Include="System.IO.Compression" />
+	</ItemGroup>
+</Project>

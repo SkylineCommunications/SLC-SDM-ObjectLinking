@@ -4,9 +4,9 @@
 		<TargetFramework>net48</TargetFramework>
 		<ImplicitUsings>disable</ImplicitUsings>
 		<Nullable>disable</Nullable>
-		<AssemblyName>Skyline.DataMiner.SDM.ObjectLinking.GQI</AssemblyName>
+		<AssemblyName>Skyline.DataMiner.Dev.Utils.SDM.ObjectLinking.GQI</AssemblyName>
 		<RootNamespace>Skyline.DataMiner.SDM.ObjectLinking</RootNamespace>
-		<Version>0.0.0-B004</Version>
+		<Version>0.2.0-B002</Version>
 		<PackageTags>Skyline;DataMiner</PackageTags>
 		<PackageProjectUrl>https://skyline.be</PackageProjectUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
@@ -24,7 +24,7 @@
 
 	<ItemGroup>
 		<None Include="README.md" Pack="true" PackagePath="" />
-		<None Include="LICENSE.txt" Pack="true" PackagePath="" />
+		<None Include="..\LICENSE.txt" Pack="true" PackagePath="" />
 		<None Include="nuget\Icon.png" Pack="true" PackagePath="" />
 	</ItemGroup>
 
@@ -39,6 +39,10 @@
 	<ItemGroup>
 		<ProjectReference Include="..\API.Common\ObjectLinking.Common.csproj" />
 	</ItemGroup>
+
+	<Target Name="CopyDllToSetupContent" AfterTargets="Build">
+		<Copy SourceFiles="$(TargetPath)" DestinationFolder="..\Install\SetupContent\DevPack" />
+	</Target>
 
 	<!-- Can be used to set the location of your local nuget store to copy to -->
 	<Import Project="../Directory.Build.props.user" Condition="Exists('../Directory.Build.props.user')" />

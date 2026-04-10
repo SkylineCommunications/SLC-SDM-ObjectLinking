@@ -58,7 +58,9 @@ using Shared;
 using Skyline.AppInstaller;
 using Skyline.ArtifactInstaller;
 using Skyline.DataMiner.Automation;
+using Skyline.DataMiner.Core.DataMinerSystem.Automation;
 using Skyline.DataMiner.Net.AppPackages;
+using Skyline.DataMiner.SDM.ObjectLinking.Install.DevPack;
 using Skyline.DataMiner.SDM.ObjectLinking.Install.DOM;
 using Skyline.DataMiner.Utils.SecureCoding.SecureIO;
 
@@ -87,12 +89,20 @@ public class Script
 
 			installer.InstallDefaultContent();
 
+			// Install the Object Linking DevPack
+			var devPackInstaller = new DevPackInstaller(installer, engine);
+			devPackInstaller.DeployAllDevPacks();
+
 			// Install DOM Module
-			var domInstaller = new DomInstaller(engine.GetUserConnection(), installer.Log);
+			var domInstaller = new DomInstaller(engine, installer.Log);
 			domInstaller.InstallDefaultContent();
 
 			// Register the Object Linking solution in SDM
 			Register(engine, context, installer);
+
+			// Remove the subscripts
+			TryDeleteScript(engine, installer, Constants.DomScriptName);
+			TryDeleteScript(engine, installer, Constants.RegistrationScriptName);
 		}
 		catch (Exception e)
 		{
@@ -130,6 +140,24 @@ public class Script
 		catch
 		{
 			installer.Log("Failed to register the solution in SDM.");
+		}
+	}
+
+	private void TryDeleteScript(IEngine engine, AppInstaller installer, string name)
+	{
+		try
+		{
+			var script = engine.GetDms().GetScript(name);
+			if (script == null)
+				return;
+
+			installer.Log($"Removing script {name}...");
+			script.Delete();
+			installer.Log($"Removed script {name}");
+		}
+		catch (Exception)
+		{
+			installer.Log($"Unable to remove script {name}");
 		}
 	}
 }

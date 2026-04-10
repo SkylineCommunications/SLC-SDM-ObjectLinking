@@ -7,9 +7,9 @@
 		<PlatformTarget>AnyCpu</PlatformTarget>
 		<ImplicitUsings>disable</ImplicitUsings>
 		<Nullable>disable</Nullable>
-		<AssemblyName>Skyline.DataMiner.SDM.ObjectLinking.Common</AssemblyName>
+		<AssemblyName>Skyline.DataMiner.Dev.Utils.SDM.ObjectLinking.Common</AssemblyName>
 		<RootNamespace>Skyline.DataMiner.SDM.ObjectLinking</RootNamespace>
-		<Version>0.1.0-B004</Version>
+		<Version>0.2.0-B002</Version>
 		<PackageTags>Skyline;DataMiner</PackageTags>
 		<PackageProjectUrl>https://skyline.be</PackageProjectUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
@@ -27,7 +27,7 @@
 
 	<ItemGroup>
 		<None Include="README.md" Pack="true" PackagePath="" />
-		<None Include="LICENSE.txt" Pack="true" PackagePath="" />
+		<None Include="..\LICENSE.txt" Pack="true" PackagePath="" />
 		<None Include="nuget\Icon.png" Pack="true" PackagePath="" />
 	</ItemGroup>
 
@@ -43,14 +43,18 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<InternalsVisibleTo Include="ObjectLinking.CommonTests" />
-		<InternalsVisibleTo Include="ObjectLinking.Automation" />
-		<InternalsVisibleTo Include="ObjectLinking.GQI" />
+		<InternalsVisibleTo Include="Skyline.DataMiner.Dev.Utils.SDM.ObjectLinking.Automation" />
+		<InternalsVisibleTo Include="Skyline.DataMiner.Dev.Utils.SDM.ObjectLinking.GQI" />
+		<InternalsVisibleTo Include="Skyline.DataMiner.Dev.Utils.SDM.ObjectLinking.Protocol" />
 		<InternalsVisibleTo Include="ObjectLinking.Install" />
-		<InternalsVisibleTo Include="ObjectLinking.Protocol" />
+		<InternalsVisibleTo Include="ObjectLinking.CommonTests" />
 	</ItemGroup>
 
 	<Import Project="..\Shared\Shared.projitems" Label="Shared" />
+
+	<Target Name="CopyDllToSetupContent" AfterTargets="Build">
+		<Copy SourceFiles="$(TargetPath)" DestinationFolder="..\Install\SetupContent\DevPack" />
+	</Target>
 
 	<!-- Can be used to set the location of your local nuget store to copy to -->
 	<Import Project="../Directory.Build.props.user" Condition="Exists('../Directory.Build.props.user')" />
